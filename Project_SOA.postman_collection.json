@@ -1,0 +1,535 @@
+{
+	"info": {
+		"_postman_id": "eb608d46-ed46-4c72-8d30-cb676a13fc96",
+		"name": "Project_SOA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Register API",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "localhost:3000/api/users/register",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login User",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "localhost:3000/api/users/login",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lihat Profil User dengan JWT",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/users/profil",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						"profil"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ganti Email User dengan JWT",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email_lama",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "email_baru",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "api_key",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3000/api/users/gantiEmail",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						"gantiEmail"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lihat 1 Produk",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/produk/:id",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"produk",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lihat Produk",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/produk?nama=nama obat&deskripsi:&limit=banyak datanya",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"produk"
+					],
+					"query": [
+						{
+							"key": "nama",
+							"value": "nama obat"
+						},
+						{
+							"key": "deskripsi:",
+							"value": null
+						},
+						{
+							"key": "limit",
+							"value": "banyak datanya",
+							"description": "tidak bisa kalo free"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Topup Saldo User dengan JWT",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/users/topup",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						"topup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upgrade Status User dengan JWT",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/users/upgrade",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						"upgrade"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Recharge API Hit User dengan JWT",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/recharge",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"recharge"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Tambah Produk [Admin]",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/produk",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"produk"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Produk [Admin]",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/produk",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"produk"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Produk [Admin]",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/produk",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"produk"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lihat 1 User [Admin]",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/users/:id_user",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						":id_user"
+					],
+					"variable": [
+						{
+							"key": "id_user",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lihat Semua User [Admin]",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/users/",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ban User [Admin]",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/users/",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "History Transaksi API [Admin]",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/users/log?nama&tanggal",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						"log"
+					],
+					"query": [
+						{
+							"key": "nama",
+							"value": null
+						},
+						{
+							"key": "tanggal",
+							"value": null
+						},
+						{
+							"key": "interval",
+							"value": "",
+							"description": "minggu atau ",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Email validator",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-RapidAPI-Key",
+						"value": "277e330438msh4a3341f50b31789p16c2c1jsna81479b4150e",
+						"type": "text"
+					},
+					{
+						"key": "X-RapidAPI-Host",
+						"value": "mailcheck.p.rapidapi.com",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://mailcheck.p.rapidapi.com/?domain=yongkiwow@gmail.com",
+					"protocol": "https",
+					"host": [
+						"mailcheck",
+						"p",
+						"rapidapi",
+						"com"
+					],
+					"path": [
+						""
+					],
+					"query": [
+						{
+							"key": "domain",
+							"value": "yongkiwow@gmail.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/produk/kategori?nama=nama obat&deskripsi&limit=banyak datanya",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/produk/kategori?nama=nama obat&deskripsi&limit=banyak datanya",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"produk",
+						"kategori"
+					],
+					"query": [
+						{
+							"key": "nama",
+							"value": "nama obat"
+						},
+						{
+							"key": "deskripsi",
+							"value": null
+						},
+						{
+							"key": "limit",
+							"value": "banyak datanya"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/produk/produsen?id_produsen&nama_produsen&limit",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/produk/produsen?id_produsen&nama_produsen&kota&limit",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"produk",
+						"produsen"
+					],
+					"query": [
+						{
+							"key": "id_produsen",
+							"value": null
+						},
+						{
+							"key": "nama_produsen",
+							"value": null
+						},
+						{
+							"key": "kota",
+							"value": null
+						},
+						{
+							"key": "limit",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/produk/produsen/:id_produsen",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/produk/produsen/:id",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"produk",
+						"produsen",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

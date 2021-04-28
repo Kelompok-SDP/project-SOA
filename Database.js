@@ -34,6 +34,8 @@ const idMax = async (namaField,namaTable,where) => {
     return kode[0].max;
 }
 
+//TODO buat kalo tidak ketemu dikeluarkan error tidak ketemu
+
 module.exports= {
     'executeQuery' : executeQuery,
     'executeQueryWithParam' : executeQueryWithParam,

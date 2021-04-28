@@ -1,4 +1,3 @@
-const mysql = require('mysql');
 const db = require('../Database');
 const auth = require('../autentikasi');
 const makeUser = async (nama,email,password,telepon,sex,tipe_user,foto_user) =>{
@@ -35,6 +34,50 @@ const makeUser = async (nama,email,password,telepon,sex,tipe_user,foto_user) =>{
 
     return Data;
 }
+
+const userLogin = async (email, password) => {
+    let query = `SELECT * FROM mh_pelanggan WHERE email = '${email}' AND password = '${password}'`;
+    let user = await db.executeQuery(query);
+
+    if(user.length == 0) {
+        const Data = {
+            status:404,
+            msg: 'user tidak ditemukan'
+        }
+
+        return Data;
+    }
+
+    let token = await auth.generateToken(user[0]);
+    const Data = {
+        status:200,
+        data:{
+            email: user[0].email,
+            nama: user[0].nama,
+            token
+        }
+    }
+
+    return Data;
+}
+
+const getAllUser = async (where = '') => {
+    let query = `SELECT * FROM mh_pelanggan ${where}`;
+    let users = await db.executeQuery(query);
+    return users;
+}
+
+const deleteUser = async (email) => {
+    
+    let query = `DELETE FROM mh_pelanggan WHERE email = '${email}'`;
+    await db.executeQuery(query);
+    return users;
+}
+
+
 module.exports = {
-    makeUser
+    makeUser,
+    userLogin,
+    getAllUser,
+    deleteUser
 }
