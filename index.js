@@ -20,7 +20,9 @@ app.use(morgan((tokens,req,res)=>{
 },{stream:accessLogStream}));
 
 const Users = require('./Routes/Users');
+const Produk = require('./Routes/Produk');
 app.use('/api/users',Users);
+app.use('/api/produk',Produk);
 
 
 app.listen(3000,() => console.log('listening on port 3000'));
