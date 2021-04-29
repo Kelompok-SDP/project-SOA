@@ -75,9 +75,36 @@ const deleteUser = async (email) => {
 }
 
 
+const getUserFromAPiKey = async (apikey) =>{
+    let user = null;
+    let query =  `select * from mh_pelanggan where api_key = '${apikey}'`;
+    user = await db.executeQuery(query);
+    return user[0];
+}
+
+const decreaseApihit = async (apikey) =>{
+    let user  = null;
+    let apihit =0;
+
+    let query =  `select * from mh_pelanggan where api_key = '${apikey}'`;
+    user = await db.executeQuery(query);
+    apihit = parseInt(user[0].api_hit);
+    if(apihit>0){
+        apihit = apihit - 1;
+    }
+
+    let query_update_user = `update mh_pelanggan set api_hit = ${apihit} where api_key = '${apikey}'`;
+    await db.executeQuery(query_update_user);
+    
+    return apihit;
+}
+
+
 module.exports = {
     makeUser,
     userLogin,
     getAllUser,
-    deleteUser
+    deleteUser,
+    getUserFromAPiKey,
+    decreaseApihit
 }
