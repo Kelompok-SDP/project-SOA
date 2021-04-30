@@ -24,6 +24,20 @@ const verifyToken = (req, res)=>{
     return user;
 }
 
+function cekAllNumeric(inputtxt) 
+{
+    var numbers = /^[-+]?[0-9]+$/;
+    if(inputtxt.match(numbers))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
 const genAPIKey = (length) => {
     const alphabets= 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ'.split('');
     let key= '';
@@ -47,5 +61,6 @@ const genAPIKey = (length) => {
 module.exports = {
     generateToken,
     verifyToken,
-    genAPIKey
+    genAPIKey,
+    cekAllNumeric
 }
