@@ -85,6 +85,74 @@ router.get('/',async (req, res) => {
     let users = await User.getAllUser(where);
     return res.status(200).send(users);
 });
+async function getUser(req,res){
+    let user = auth.verifyToken(req,res);
+
+    user.data = await User.getAllUser(`where email='${user.data.email}'`);
+    user.data=user.data[0];
+    return user;
+}
+router.get('/profil',async (req, res) => {
+    let user = auth.verifyToken(req,res);
+    
+    delete user.data.password;
+    delete user.data.kode;
+
+    user.data.jeniskelamin = user.data.jeniskelamin=="P"?"Perempuan":"Laki Laki";
+    let tipe_user = ["Free","Advance","Profesional"];
+    user.data.tipe_user=tipe_user[user.data.tipe_user];
+
+    return res.status(200).send(user.data);
+});
+
+router.put('/upgrade',async (req, res) => {
+    let user=await getUser(req,res)
+    let price=[15000,25000];
+
+    let tipe=req.body.tipe;
+
+    if(tipe<3){
+        return res.status(400).send("Tipe salah input");
+    }
+
+    if(user.data.saldo < price[tipe-1]){
+        return res.status(400).send("Saldo anda tidak cukup");
+    }
+
+    if(user.data.tipe_user >= parseInt(tipe)){
+        return res.status(400).send("Tipe anda lebih tinggi atau sama tinggi");
+    }
+
+    user.data.saldo-=price[tipe];
+    user.data.tipe_user=parseInt(tipe)
+
+    let updatedUser = await User.updateUser(`set saldo='${user.data.saldo}', tipe_user='${user.data.tipe_user}'`,`where email='${user.data.email}'`);
+    
+
+
+    return res.status(200).send(user.data);
+});
+router.put('/topup',async (req, res) => {
+    let user=await getUser(req,res)
+
+    let saldo=req.body.saldo;
+
+    user.data.saldo=parseInt(user.data.saldo)+parseInt(saldo)
+
+    let updatedUser = await User.updateUser(`set saldo='${user.data.saldo}'`,`where email='${user.data.email}'`);
+
+    return res.status(200).send(user.data);
+});
+router.put('/gantiEmail',async (req, res) => {
+    let user=await getUser(req,res)
+
+    let email=req.body.email;
+
+    let updatedUser = await User.updateUser(`set email='${user.data.email}'`,`where email='${user.data.email}'`);
+
+    return res.status(200).send("Email berhasil di ganti tolong login kembali");
+});
+
 
 router.delete('/',async (req, res) => {
     await vertifikasiAdmin();

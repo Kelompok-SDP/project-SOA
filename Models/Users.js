@@ -67,6 +67,12 @@ const getAllUser = async (where = '') => {
     return users;
 }
 
+const updateUser = async (set,where) => {
+    let query = `update mh_pelanggan ${set} ${where}`;
+    let users = await db.executeQuery(query);
+    return users;
+}
+
 const deleteUser = async (email) => {
     
     let query = `DELETE FROM mh_pelanggan WHERE email = '${email}'`;
@@ -79,5 +85,6 @@ module.exports = {
     makeUser,
     userLogin,
     getAllUser,
-    deleteUser
+    deleteUser,
+    updateUser
 }

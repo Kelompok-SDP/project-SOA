@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
+const User = require("./Models/Users");
 
 const generateToken = (user)=>{
+    delete user.password;
     const token = jwt.sign({
         data: user,
     },'projectSOA');
@@ -21,7 +23,41 @@ const verifyToken = (req, res)=>{
         return user;
     }
 
+
+
     return user;
+}
+// check akun Free atau tidak
+const verifyFree =(req,res)=>{
+    let user= verifyToken(req,res);
+    if(user.tipe_user=="0"){
+        next();
+    }
+    return res.status(401).send("Akun anda tidak memiliki hak akses");
+}
+// check akun Advance atau tidak
+const verifyAdvanced =(req,res)=>{
+    let user= verifyToken(req,res);
+    if(user.tipe_user=="1"){
+        next();
+    }
+    return res.status(401).send("Akun anda tidak memiliki hak akses");
+}
+// check akun Profesional atau tidak
+const verifyProfesional =(req,res)=>{
+    let user= verifyToken(req,res);
+    if(user.tipe_user=="2"){
+        next();
+    }
+    return res.status(401).send("Akun anda tidak memiliki hak akses");
+}
+// check akun Profesional atau Advance
+const verifyNotFree =(req,res)=>{
+    let user= verifyToken(req,res);
+    if(user.tipe_user!="0"){
+        next();
+    }
+    return res.status(401).send("Akun anda tidak memiliki hak akses");
 }
 
 const genAPIKey = (length) => {
@@ -47,5 +83,9 @@ const genAPIKey = (length) => {
 module.exports = {
     generateToken,
     verifyToken,
-    genAPIKey
+    genAPIKey,
+    verifyFree,
+    verifyAdvanced,
+    verifyProfesional,
+    verifyNotFree,
 }
