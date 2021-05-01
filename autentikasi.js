@@ -60,6 +60,20 @@ const verifyNotFree =(req,res)=>{
     return res.status(401).send("Akun anda tidak memiliki hak akses");
 }
 
+function cekAllNumeric(inputtxt) 
+{
+    var numbers = /^[-+]?[0-9]+$/;
+    if(inputtxt.match(numbers))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
 const genAPIKey = (length) => {
     const alphabets= 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ'.split('');
     let key= '';
@@ -88,4 +102,5 @@ module.exports = {
     verifyAdvanced,
     verifyProfesional,
     verifyNotFree,
+    cekAllNumeric
 }

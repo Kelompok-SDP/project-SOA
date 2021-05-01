@@ -61,16 +61,15 @@ router.post('/login',async (req, res) => {
 
 //admin user
 
-const vertifikasiAdmin = async () => {
+const vertifikasiAdmin = async (req, res) => {
     let user = await auth.verifyToken(req,res);
-
     //token kosong
-    if(user?.data?.email){
+    if(!user?.data?.email){
         return res.status(401).send({
             error: 'Unauthorized'
         })
     }
-
+    //cek kalau user biasa
     if(user?.data?.email != 'admin'){
         return res.status(401).send({
             error: 'Unauthorized hanya boleh admin'
@@ -159,7 +158,25 @@ router.delete('/',async (req, res) => {
 
     let email = req.body.email;
     let deletedUser = await User.deleteUser(email);
+});
     
+//===== SHAN
+router.get('/:id_user', async (req, res) =>{
+    let verify = await vertifikasiAdmin(req, res);
+    if(!verify){
+        let userId = req.params.id_user;
+        let searchUser = await User.getUser(userId);
+        if(searchUser?.data){
+            return res.status(searchUser.status).send({
+                Message: searchUser.msg,
+                data: searchUser.data     
+            });
+        }
+        return res.status(searchUser.status).send({
+            Message: searchUser.msg,
+
+        });
+    }
 });
 
 module.exports = router;

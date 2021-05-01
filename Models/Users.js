@@ -80,11 +80,85 @@ const deleteUser = async (email) => {
     return users;
 }
 
+//===== SHAN
+const getUser = async (userId) => {
+    let query = `SELECT * FROM MH_PELANGGAN WHERE KODE = '${userId}'`;
+    let hasil = await db.executeQuery(query);
+
+    if(hasil.length > 0){
+        let strtipe; let strjk;
+        if(hasil[0].tipe_user == 0){
+            strtipe = "Free";
+        }else if(hasil[0].tipe_user == 1){
+            strtipe = "Advance";
+        }else{
+            strtipe = "Profesional";
+        }
+
+        if(hasil[0].jeniskelamin == 'P'){
+            strjk = "Perempuan";
+        }else{
+            strjk = "Laki-laki";
+        }
+        const numb = hasil[0].saldo;
+        const format = numb.toString().split('').reverse().join('');
+        const convert = format.match(/\d{1,3}/g);
+        const rupiah = 'Rp ' + convert.join('.').split('').reverse().join('');
+
+        return {
+            status: 200,
+            msg: 'Berhasil ambil data user',
+            data:{
+                nama: hasil[0].nama,
+                nomor_telepon: hasil[0].telepon,
+                jenis_kelamin: strjk,
+                email: hasil[0].email,
+                saldo: rupiah,
+                tipe: strtipe
+            }
+        }
+    }else{
+        return {
+            status: 404,
+            msg: 'User tidak ditemukan, ubah parameter Id User',
+        }
+    }
+}
+
+
+const getUserFromAPiKey = async (apikey) =>{
+    let user = null;
+    let query =  `select * from mh_pelanggan where api_key = '${apikey}'`;
+    user = await db.executeQuery(query);
+    return user[0];
+}
+
+const decreaseApihit = async (apikey) =>{
+    let user  = null;
+    let apihit =0;
+
+    let query =  `select * from mh_pelanggan where api_key = '${apikey}'`;
+    user = await db.executeQuery(query);
+    apihit = parseInt(user[0].api_hit);
+   
+    if(apihit > 0){
+        apihit = apihit - 1;
+    }
+
+    let query_update_user = `update mh_pelanggan set api_hit = ${apihit} where api_key = '${apikey}'`;
+    await db.executeQuery(query_update_user);
+    
+    return apihit;
+}
+
 
 module.exports = {
     makeUser,
     userLogin,
     getAllUser,
     deleteUser,
-    updateUser
+    updateUser,
+    getUser,
+    getUserFromAPiKey,
+    decreaseApihit
 }
