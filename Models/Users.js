@@ -134,7 +134,8 @@ const decreaseApihit = async (apikey) =>{
     let query =  `select * from mh_pelanggan where api_key = '${apikey}'`;
     user = await db.executeQuery(query);
     apihit = parseInt(user[0].api_hit);
-    if(apihit>0){
+   
+    if(apihit > 0){
         apihit = apihit - 1;
     }
 

@@ -7,7 +7,60 @@ function convertToRp(number){
     return fullrupiah;
 }
 
-const searchProductWithLimit = async (nama, desk, limit, type) => {
+const getProdusen = async(tipe, limits, kota,id,nama)=>{
+    let data = null;
+    if(parseInt(tipe) == 1){
+        let ctr = 0;
+        
+        if(kota != ""){   
+            ctr++;
+        }
+        if(nama != ""){  
+            ctr++;
+        }
+
+        let query = null;
+
+       if(limits !=""){
+            if(ctr == 0 ){
+                query = ` Select kode as kode_produsen, nama as nama_produsen, bidangusaha as bidang_usaha, email as email_produsen, telepon, alamat, kota, kodepos as kode_pos, cp_nama, cp_jabatan, cp_telepon, cp_email, keterangan from mh_produsen limit ${parseInt(limits)}`;
+            }
+            else if(ctr == 1){
+               if(kota != ""){
+                     query = ` Select kode as kode_produsen, nama as nama_produsen, bidangusaha as bidang_usaha, email as email_produsen, telepon, alamat, kota, kodepos as kode_pos, cp_nama, cp_jabatan, cp_telepon, cp_email, keterangan from mh_produsen  where kota like '%${kota}%' limit ${parseInt(limits)}`;
+               }
+
+               if(nama != ""){
+                    query = ` Select kode as kode_produsen, nama as nama_produsen, bidangusaha as bidang_usaha, email as email_produsen, telepon, alamat, kota, kodepos as kode_pos, cp_nama, cp_jabatan, cp_telepon, cp_email, keterangan from mh_produsen  where nama like '%${nama}%' limit ${parseInt(limits)}`;
+               }
+            } else{
+                query = ` Select kode as kode_produsen, nama as nama_produsen, bidangusaha as bidang_usaha, email as email_produsen, telepon, alamat, kota, kodepos as kode_pos, cp_nama, cp_jabatan, cp_telepon, cp_email, keterangan from mh_produsen  where kota like '%${kota}%' and nama like '%${nama}%'  limit ${parseInt(limits)}`;
+            }
+       } else{
+            if(ctr == 0 ){
+                query = ` Select kode as kode_produsen, nama as nama_produsen, bidangusaha as bidang_usaha, email as email_produsen, telepon, alamat, kota, kodepos as kode_pos, cp_nama, cp_jabatan, cp_telepon, cp_email, keterangan from mh_produsen `;
+            }
+            else if(ctr == 1){
+                if(kota != ""){
+                    query = ` Select kode as kode_produsen, nama as nama_produsen, bidangusaha as bidang_usaha, email as email_produsen, telepon, alamat, kota, kodepos as kode_pos, cp_nama, cp_jabatan, cp_telepon, cp_email, keterangan from mh_produsen  where kota like '%${kota}%'`;
+              }
+
+              if(nama != ""){
+                   query = ` Select kode as kode_produsen, nama as nama_produsen, bidangusaha as bidang_usaha, email as email_produsen, telepon, alamat, kota, kodepos as kode_pos, cp_nama, cp_jabatan, cp_telepon, cp_email, keterangan from mh_produsen  where nama like '%${nama}%'`;
+              }
+            } else{
+                query = ` Select kode as kode_produsen, nama as nama_produsen, bidangusaha as bidang_usaha, email as email_produsen, telepon, alamat, kota, kodepos as kode_pos, cp_nama, cp_jabatan, cp_telepon, cp_email, keterangan from mh_produsen  where kota like '%${kota}%' and nama like '%${nama}%'`;
+            }
+       }
+        data = await db.executeQuery(query)
+    }else if(parseInt(tipe) == 2){
+        let query = `Select kode as kode_produsen, nama as nama_produsen, bidangusaha as bidang_usaha, email as email_produsen, telepon, alamat, kota, kodepos as kode_pos, cp_nama, cp_jabatan, cp_telepon, cp_email, keterangan from mh_produsen where kode  = '${id}'`
+        data = await db.executeQuery(query);
+    }
+    return data
+}
+
+const searchProductWithLimit = async (nama, desk, limit, type, aihit) => {
     let statinput = 0;
     if(type == 0){
         if(limit > 10){
@@ -19,17 +72,20 @@ const searchProductWithLimit = async (nama, desk, limit, type) => {
         }
     }
     if(statinput == 0){
-        let whereName = ""; let whereDesc = "";
+        let whereName = ""; let whereDesc = ""; let conjuction = "";
+        if(nama && desk){
+            conjuction =  ` AND `;
+        }
         if(nama){
             whereName = `NAMA LIKE '${nama}%'`;
             if(desk){
-                whereDesc = `AND INDIKASI LIKE '%${desk}%'`;
+                whereDesc = `INDIKASI LIKE '%${desk}%'`;
             }
         }
         const array = [];
         let matches = limit.match("[a-zA-Z]+");
             if(matches == null){
-                let select = `SELECT * FROM MH_PRODUK WHERE ` + whereName + whereDesc + ` LIMIT ${limit}`;
+                let select = `SELECT * FROM MH_PRODUK WHERE ` + whereName + conjuction + whereDesc + ` AND STATUS = 1 LIMIT ${limit}`;
                 let hasil = await db.executeQuery(select);
                 if(hasil.length > 0){
                     hasil.forEach(element => {
@@ -251,6 +307,7 @@ const delProduct = async (id) => {
 }
 
 module.exports = {
+    getProdusen,
     searchProductWithLimit,
     addProduct,
     updProduct,
