@@ -69,7 +69,7 @@ CREATE TABLE `mh_pelanggan` (
   `password` varchar(100) NOT NULL,
   `telepon` varchar(20) DEFAULT NULL,
   `jeniskelamin` varchar(1) DEFAULT NULL,
-  `api_hit` varchar(255) NOT NULL,
+  `api_hit` int(11) NOT NULL,
   `api_key` varchar(255) NOT NULL,
   `saldo` int(11) NOT NULL,
   `tipe_user` int(11) NOT NULL
@@ -1111,6 +1111,50 @@ ALTER TABLE `th_racik`
 --
 ALTER TABLE `th_stok`
   ADD CONSTRAINT `th_stok_ibfk_1` FOREIGN KEY (`fk_produk`) REFERENCES `mh_produk` (`kode`);
+COMMIT;
+
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `log_transaksi`
+--
+
+DROP TABLE IF EXISTS `log_transaksi`;
+CREATE TABLE `log_transaksi` (
+  `kode` int(11) NOT NULL,
+  `tgl_transaksi` date NOT NULL,
+  `kode_pelanggan` varchar(50) NOT NULL,
+  `jenis_transaksi` varchar(100) NOT NULL,
+  `nominal` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data untuk tabel `log_transaksi`
+--
+
+INSERT INTO `log_transaksi` (`kode`, `tgl_transaksi`, `kode_pelanggan`, `jenis_transaksi`, `nominal`) VALUES
+(1, '2021-05-04', 'PE_YY001', 'Upgrade', 10000);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indeks untuk tabel `log_transaksi`
+--
+ALTER TABLE `log_transaksi`
+  ADD PRIMARY KEY (`kode`);
+
+--
+-- AUTO_INCREMENT untuk tabel yang dibuang
+--
+
+--
+-- AUTO_INCREMENT untuk tabel `log_transaksi`
+--
+ALTER TABLE `log_transaksi`
+  MODIFY `kode` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

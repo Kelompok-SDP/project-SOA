@@ -221,6 +221,60 @@ router.delete('/', async (req, res) =>{
     }
 });
 
+router.get("/kategori", async function (req,res){
+    //cek apakah ada token
+    if(!req.header){
+        return res.status(401).send({"Message": "Unauthorized"});
+    }
+    const token = req.header("x-auth-token");
+
+    let users = null;
+    users = await User.getUserFromAPiKey(token);
+    //cek apakah ada user atau tidak
+    if(!users){
+        return res.status(401).send({"Message": "Unauthorized"});
+    }
+    //kalo bukan profession maka ditendang
+    if(users.tipe_user == 0){
+        return res.status(401).send({"Message": "Unauthorized"});
+    }
+    //cek api hit apakah cukup atau tidak 
+    let apihit = await User.decreaseApihit(token);
+    
+    if(apihit ==0 ){
+        return res.status(200).send({"Message": "Api Hit tidak mencukupi"});
+    }
+
+
+
+    let nama = "";
+    let deskripsi = "";
+    let limit = "";
+
+    
+
+    if(req.query.limit){
+        limit = req.query.limit;
+        if( !auth.cekAllNumeric(limit)){
+            return res.status(400).send({"Message": "Format limit hanya boleh angka"});
+        }
+    
+    }
+
+    if(req.query.deskripsi){
+       deskripsi = req.query.deskripsi
+    }
+
+    if(req.query.nama){
+        nama = req.query.nama;
+    }
+
+    let getData = await Produk.getKategoriProduk(limit,nama,deskripsi);
+     return res.status(200).send(getData);
+})
+
+
+
 
 router.get("/:id", async (req,res)=>{
     let user=await getUser(req,res);
@@ -234,5 +288,8 @@ router.get("/:id", async (req,res)=>{
     
     return res.send(getData);
 })
+
+
+
 
 module.exports = router;

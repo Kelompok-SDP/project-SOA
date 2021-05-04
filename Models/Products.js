@@ -90,7 +90,7 @@ const searchProductWithLimit = async (nama, desk, limit, type, aihit) => {
                 if(hasil.length > 0){
                     hasil.forEach(element => {
                         let product = {
-                            nama: element.nama,
+                            nama: element.nama, 
                             deskripsi: element.indikasi
                         }
                         array.push(product);
@@ -328,6 +328,57 @@ const addDeskripsi = async(value)=>{
     return data
 }
 
+
+const getKategoriProduk  = async(limits,nama,deskripsi)=>{
+    let data = null;
+    let ctr = 0;
+    
+    if(deskripsi != ""){   
+        ctr++;
+    }
+    if(nama != ""){  
+        ctr++;
+    }
+
+    let query = null;
+
+    if(limits !=""){
+        if(ctr == 0 ){
+            query = ` Select nama as nama_kategori, deskripsi as deskripsi_kategori from mh_kategori limit ${parseInt(limits)}`;
+        }
+        else if(ctr == 1){
+            if(deskripsi != ""){
+                    query = ` Select nama as nama_kategori, deskripsi as deskripsi_kategori from mh_kategori  where deskripsi like '%${deskripsi}%' limit ${parseInt(limits)}`;
+            }
+
+            if(nama != ""){
+                query = `select nama as nama_kategori, deskripsi as deskripsi_kategori from mh_kategori  where nama like '%${nama}%' limit ${parseInt(limits)}`;
+            }
+        } else{
+            query = `select nama as nama_kategori, deskripsi as deskripsi_kategori from mh_kategori where deskripsi like '%${deskripsi}%' and nama like '%${nama}%'  limit ${parseInt(limits)}`;
+        }
+    } else{
+        if(ctr == 0 ){
+            query = ` Select nama as nama_kategori, deskripsi as deskripsi_kategori from mh_kategori `;
+        }
+        else if(ctr == 1){
+            if(deskripsi != ""){
+                    query = ` Select nama as nama_kategori, deskripsi as deskripsi_kategori from mh_kategori  where deskripsi like '%${deskripsi}%' `;
+            }
+
+            if(nama != ""){
+                query = `select nama as nama_kategori, deskripsi as deskripsi_kategori from mh_kategori  where nama like '%${nama}%'`;
+            }
+        } else{
+            query = `select nama as nama_kategori, deskripsi as deskripsi_kategori from mh_kategori where deskripsi like '%${deskripsi}%' and nama like '%${nama}%'  `;
+        }
+    }
+    data = await db.executeQuery(query)
+
+    return data
+}
+
+
 module.exports = {
     getProdusen,
     searchProductWithLimit,
@@ -336,5 +387,6 @@ module.exports = {
     delProduct,
     getProdukById,
     getProduk,
-    addDeskripsi
+    addDeskripsi,
+    getKategoriProduk
 }

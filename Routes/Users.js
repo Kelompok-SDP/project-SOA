@@ -160,6 +160,45 @@ router.put('/upgrade',async (req, res) => {
 
     return res.status(200).send(user.data);
 });
+
+
+router.put("/recharge", async (req,res)=>{
+    let user=await getUser(req,res);
+    let api_hit = req.body.api_hit;
+
+    if( !auth.cekAllNumeric(api_hit)){
+        return res.status(400).send({"Message": "Format api hit hanya boleh angka"});
+    }
+    let total= parseInt(api_hit) * 20000;
+    if(user.data.saldo < total){
+        return res.status(400).send("Saldo anda tidak cukup");
+    }
+    user.data.saldo-=total;
+    let temp= user.data.api_hit
+    user.data.api_hit +=parseInt(api_hit);
+
+    let tipe = "Free";
+    if(user.data.tipe_user==2){
+        tipe = "Profesional"
+    }else if(user.data.tipe_user == 1){
+        tipe = "Advance"
+    }
+    let updatedUser = await User.updateUser(`set saldo='${user.data.saldo}', api_hit='${user.data.api_hit}'`,`where email='${user.data.email}'`);
+
+    return res.status(200).send({
+        "nama" : user.data.nama,
+        "email" : user.data.email,
+        "nomor_telepon" : user.data.telepon,
+        "jumlah_recharge" : parseInt(api_hit),
+        "total_pembayaran" : total,
+        "api_hit_sebelumnya" : temp,
+        "api_hit_sesudah_recharge" : user.data.api_hit,
+        "tipe_user" : tipe
+    })
+
+})
+
+
 router.put('/topup',async (req, res) => {
     let user=await getUser(req,res)
 
