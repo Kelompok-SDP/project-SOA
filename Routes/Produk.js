@@ -7,13 +7,6 @@ const User = require("../Models/Users");
 const auth = require('../autentikasi');
 const emailValidator = require("../emailValidator");
 
-async function getUser(req,res){
-    let user = auth.verifyToken(req,res);
-
-    user.data = await User.getAllUser(`where email='${user.data.email}'`);
-    user.data=user.data[0];
-    return user;
-}
 
 router.get("/produsen/:id", async (req,res)=>{
    //cek apakah ada token
@@ -42,19 +35,6 @@ router.get("/produsen/:id", async (req,res)=>{
     let getData = await Produk.getProdusen(2,0,"",id,"");
     return res.status(200).send(getData);
 })
-router.get("/:id", async (req,res)=>{
-    let user=await getUser(req,res);
-    if(user.data.api_hit<1){
-        return res.status(400).send("Api hit user habis");
-    }
-
-    let getData = await Produk.getProdukById(req.params.id);
-    
-    let updatedUser = await User.updateUser(`set api_hit=api_hit-1`,`where email='${user.data.email}'`);
-    
-    return res.send(getData);
-})
-
 
 
 router.get("/produsen", async (req,res)=>{

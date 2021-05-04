@@ -5,6 +5,15 @@ const Produk = require("../Models/Products");
 const User = require("../Models/Users");
 const auth = require('../autentikasi');
 
+
+async function getUser(req,res){
+    let user = auth.verifyToken(req,res);
+
+    user.data = await User.getAllUser(`where email='${user.data.email}'`);
+    user.data=user.data[0];
+    return user;
+}
+
 router.get("/produsen/:id", async (req,res)=>{
 //cek apakah ada token
     if(!req.header){
@@ -211,4 +220,19 @@ router.delete('/', async (req, res) =>{
         });
     }
 });
+
+
+router.get("/:id", async (req,res)=>{
+    let user=await getUser(req,res);
+    if(user.data.api_hit<1){
+        return res.status(400).send("Api hit user habis");
+    }
+
+    let getData = await Produk.getProdukById(req.params.id);
+    
+    let updatedUser = await User.updateUser(`set api_hit=api_hit-1`,`where email='${user.data.email}'`);
+    
+    return res.send(getData);
+})
+
 module.exports = router;
