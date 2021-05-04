@@ -306,10 +306,35 @@ const delProduct = async (id) => {
     }
 }
 
+
+
+const getProdukById = async(id)=>{
+    let data = db.executeQuery(`select kat.nama "Jenis Kategori",sat.nama "Jenis Satuan",pro.nama "Nama Produsen", prod.nama "Nama Produk",prod.indikasi,prod.komposisi,prod.dosis,prod.aturan_pakai,prod.harga,if(prod.butuh_resep=1,'Butuh','Tidak Butuh') "Butuh Resep"
+    from mh_produk prod ,mh_kategori kat,mh_produsen pro,mh_satuan sat
+    where kat.kode=prod.fk_kategori and 
+    pro.kode=prod.fk_produsen and
+    sat.kode=prod.fk_satuan and
+    prod.kode='${id}'`);
+    return data
+}
+
+const getProduk = async(where)=>{
+    let data = db.executeQuery(`select * from mh_produk ${where}`);
+    return data
+}
+
+const addDeskripsi = async(value)=>{
+    let data = db.executeQuery(`insert into mh_deskripsi_produk ${value}`);
+    return data
+}
+
 module.exports = {
     getProdusen,
     searchProductWithLimit,
     addProduct,
     updProduct,
-    delProduct
+    delProduct,
+    getProdukById,
+    getProduk,
+    addDeskripsi
 }
