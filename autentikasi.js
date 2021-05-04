@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const User = require("./Models/Users");
 
 const generateToken = (user)=>{
     delete user.password;

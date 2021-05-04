@@ -1,12 +1,13 @@
 const db = require('../Database');
 const auth = require('../autentikasi');
+
 const makeUser = async (nama,email,password,telepon,sex,tipe_user,foto_user) =>{
     let signature = 'PE';
 
     let space = nama.toString().search(' ')
     let inital_nama = space != -1 ? 
-    nama.toString().subString(0,2) : nama.toString().subString(0,1) 
-    + nama.toString().subString(space+1,1);
+    nama.toString().substring(0,2) : nama.toString().substring(0,1) 
+    + nama.toString().substring(space+1,1);
 
 
     let newKode = signature + '_' +inital_nama.toString().toUpperCase();
@@ -16,8 +17,8 @@ const makeUser = async (nama,email,password,telepon,sex,tipe_user,foto_user) =>{
     let api_key = auth.genAPIKey(15);
     let saldo = 0;
     let api_hit = 100;
-    let query = 'INSERT INTO mh_pelanggan VALUES(?,?,?,?,?,?,?,?,?,?)';
-    await db.executeQueryWithParam(query,[newKode,nama,email,password,telepon,sex,api_hit,api_key,saldo,tipe_user]);
+    let query = 'INSERT INTO mh_pelanggan VALUES(?,?,?,?,?,?,?,?,?,?,?)';
+    await db.executeQueryWithParam(query,[newKode,nama,email,password,telepon,sex,api_hit,api_key,saldo,tipe_user,foto_user]);
 
     const Data = {
         status: 201,
@@ -26,7 +27,7 @@ const makeUser = async (nama,email,password,telepon,sex,tipe_user,foto_user) =>{
             kode: newKode,
             "api key":api_key,
             "jumlah api hit": api_hit,
-            nama,email,password,telepon,
+            nama,foto_user,email,telepon,
             "jenis kelamin": sex,
             saldo: saldo
         }
@@ -35,10 +36,12 @@ const makeUser = async (nama,email,password,telepon,sex,tipe_user,foto_user) =>{
     return Data;
 }
 
+
 const userLogin = async (email, password) => {
     let query = `SELECT * FROM mh_pelanggan WHERE email = '${email}' AND password = '${password}'`;
     let user = await db.executeQuery(query);
 
+    
     if(user.length == 0) {
         const Data = {
             status:404,
@@ -61,9 +64,14 @@ const userLogin = async (email, password) => {
     return Data;
 }
 
-const getAllUser = async (where = '') => {
-    let query = `SELECT * FROM mh_pelanggan ${where}`;
+const getAllUser = async (where = '',limit) => {
+    let query = `SELECT * FROM mh_pelanggan ${where} ${limit}`;
     let users = await db.executeQuery(query);
+    for (let i = 0; i < users.length; i++) {
+        const user = users[i];
+        user.jeniskelamin = user.jeniskelamin == 'L' ? 'Laki-Laki' : 'Perempuan';
+        delete user.password;
+    }
     return users;
 }
 
@@ -73,11 +81,70 @@ const updateUser = async (set,where) => {
     return users;
 }
 
+const searchUser = async (email)=>{
+    let query = `SELECT * FROM mh_pelanggan WHERE email = '${email}'`;
+    let user = await db.executeQuery(query);
+
+    if(user.length > 0){
+        return user[0];
+    }
+
+    return null;
+}
 const deleteUser = async (email) => {
-    
-    let query = `DELETE FROM mh_pelanggan WHERE email = '${email}'`;
+    let query = `SELECT nama,email,telepon,api_key FROM mh_pelanggan WHERE email = '${email}'`;
+    let user = await db.executeQuery(query);
+
+    query = `UPDATE mh_pelanggan SET tipe_user = 4 WHERE email = '${email}'`;
     await db.executeQuery(query);
-    return users;
+    return {
+        message: 'user berhasil dihapus',
+        user:user[0]
+    };
+}
+
+const getLogAllUser = async (where,limit,users) => {
+    let data = [];
+    if(users.length != 0){
+
+        if(where == ""){
+            for (let i = 0; i < users.length; i++) {
+                const user = users[i];
+                let query = `SELECT DATE_FORMAT(tgl_transaksi,\'%d-%m-%Y\') AS tgl_transaksi, 
+                kode_pelanggan, jenis_transaksi, nominal FROM log_transaksi WHERE kode_pelanggan = '${user.kode}'
+                 ${limit} `;
+                let Data = await db.executeQuery(query);
+                data.push(Data[0]);
+            }
+        }
+        else{
+            for (let i = 0; i < users.length; i++) {
+                const user = users[i];
+                let query = `SELECT DATE_FORMAT(tgl_transaksi,\'%d-%m-%Y\') AS tgl_transaksi, 
+                kode_pelanggan, jenis_transaksi, nominal FROM log_transaksi ${where} AND kode_pelanggan = '${user.kode}'
+                    ${limit} `;
+                let Data = await db.executeQuery(query);
+                data.push(Data[0]);
+            }
+           
+        }
+        
+    }
+    else{
+        let query = `SELECT DATE_FORMAT(tgl_transaksi,\'%d-%m-%Y\') AS tgl_transaksi, 
+        kode_pelanggan, jenis_transaksi, nominal FROM log_transaksi ${where} 
+            ${limit} `;
+        let Data = await db.executeQuery(query);
+        data.push(Data[0]);
+    }
+
+    // for (let i = 0; i < data.length; i++) {
+    //     const d = data[i];
+    //     let temp = d.tgl_transaksi.toString();
+    //     console.log(temp);
+    // }
+    return data;
+    
 }
 
 //===== SHAN
@@ -160,5 +227,7 @@ module.exports = {
     updateUser,
     getUser,
     getUserFromAPiKey,
-    decreaseApihit
+    decreaseApihit,
+    searchUser,
+    getLogAllUser
 }

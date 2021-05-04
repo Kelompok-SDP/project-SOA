@@ -4,10 +4,16 @@ let X_RapidAPI_Host = `mailcheck.p.rapidapi.com`;
 let url = `https://mailcheck.p.rapidapi.com/`;
 
 const validatorEmail = async (req,res,email) =>{
-    req.setHeader('X-RapidAPI-Key', X_RapidAPI_Key);
-    req.setHeader('X-RapidAPI-Host', X_RapidAPI_Host);
+    let config = {
+        headers: {
+            'X-RapidAPI-Key':X_RapidAPI_Key,
+            'X-RapidAPI-Host':X_RapidAPI_Host,
+        }
+    }
+    // req.setHeader('X-RapidAPI-Key', X_RapidAPI_Key);
+    // req.setHeader('X-RapidAPI-Host', X_RapidAPI_Host);
 
-    let valid = await axios.get(url+"?domain="+email);
+    let valid = await axios.get(url+"?domain="+email,config);
 
     if(valid.data.reason != 'Whitelisted'){
         const Data = {

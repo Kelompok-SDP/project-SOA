@@ -2,9 +2,11 @@ const express = require("express");
 const router = express.Router();
 const uploadFile = require("../uploadFile");
 const User = require("../Models/Users");
-const Produk = require("../Models/Produk");
+const Produk = require("../Models/Products");
 const auth = require('../autentikasi');
 const emailValidator = require("../emailValidator");
+
+const db = require('../Database');
 
 async function getUser(req,res){
     let user = auth.verifyToken(req,res);
@@ -15,18 +17,38 @@ async function getUser(req,res){
 }
 
 router.post('/register',uploadFile.upload.single("foto_user"),async (req, res) => {
-    let {nama, email,password,telepon,sex,tipe_user} = req.body;
-    let foto_user = req.file.filename;
+    let {nama, email,password,telepon,jenis_kelamin} = req.body;
+    let foto_user = "./Public/uploads/"+req.file.filename;
 
-    let validEmail = emailValidator.validatorEmail(email);
+    nama = nama.toString().charAt(0).toUpperCase()+nama.toString().slice(1);
+    let tipe_user = 0;
+    let validEmail = await emailValidator.validatorEmail(req,res,email);
     if(validEmail.status == 400){
         return res.status(400).send({
             message:validEmail.reason
         })
     }
 
-    //TODO cek email user sudah dipakai apa belum
-    let newUser = await User.makeUser(nama,email,password,telepon,sex,tipe_user,foto_user);
+    
+    let query = `SELECT * FROM mh_pelanggan WHERE email = '${email}'`;
+    let user = await db.executeQuery(query);
+
+    if(user.length > 0){
+        return res.status(400).send({
+            message:'email sudah pernah digunakan'
+        })
+    }
+
+    query = `SELECT * FROM mh_pelanggan WHERE telepon = '${telepon}'`;
+    user = await db.executeQuery(query);
+
+    if(user.length > 0){
+        return res.status(400).send({
+            message:'no telepon sudah pernah digunakan'
+        })
+    }
+
+    let newUser = await User.makeUser(nama,email,password,telepon,jenis_kelamin,tipe_user,foto_user);
 
     if(newUser?.data){
         return res.status(newUser.status).send({
@@ -57,13 +79,11 @@ router.post('/login',async (req, res) => {
     }
 
     let user = await User.userLogin(email,password);
-
-    if(user.data == 404){
+    if(user.status == 404){
         return res.status(user.status).send({
             error: user.msg
         })
     }
-
     return res.status(user.status).send(user.data);
 })
 
@@ -73,23 +93,30 @@ const vertifikasiAdmin = async (req, res) => {
     let user = await auth.verifyToken(req,res);
     //token kosong
     if(!user?.data?.email){
-        return res.status(401).send({
-            error: 'Unauthorized'
-        })
+        return {
+            status:401,
+            msg: 'Unauthorized'
+        };
     }
     //cek kalau user biasa
     if(user?.data?.email != 'admin'){
-        return res.status(401).send({
-            error: 'Unauthorized hanya boleh admin'
-        })
+        return {
+            status:401,
+            msg: 'Unauthorized hanya boleh admin'
+        };
     }
 }
 
 router.get('/',async (req, res) => {
-    await vertifikasiAdmin();
+    let data = await vertifikasiAdmin(req,res);
+    if(data?.status == 401){
+        return res.status(401).send({"Message": data.msg});
+    }
 
-    let where = req.query != "" ? `WHERE email = '${email}'` : "";
-    let users = await User.getAllUser(where);
+    let where = req.query.email != null ? `WHERE email = '${req.query.email}'` : "";
+    let limit = req.query.limit != null ? `LIMIT  ${req.query.limit}` : "";
+    // console.log(req.query);
+    let users = await User.getAllUser(where,limit);
     return res.status(200).send(users);
 });
 
@@ -176,12 +203,50 @@ router.post('/addDeskripsi',async (req, res) => {
 
 
 router.delete('/',async (req, res) => {
-    await vertifikasiAdmin();
-
+    let data = await vertifikasiAdmin(req,res);
+    if(data?.status == 401){
+        return res.status(401).send({"Message": data.msg});
+    }
     let email = req.body.email;
+
+    if(!email){
+        return res.status(400).send({"Message": "Mohon isi email user"});
+    }
+
+    let query = `SELECT * FROM mh_pelanggan WHERE email = '${email}' AND tipe_user != '4'`;
+    let user = await db.executeQuery(query);
+
+    if(user.length == 0){
+        return res.status(404).send({"Message": "user tidak ditemukan"});
+    }
+
     let deletedUser = await User.deleteUser(email);
+    return res.status(200).send(deletedUser);
 });
-    
+
+router.get('/log', async (req, res) =>{
+    let where = "";
+    let limit = req.query.limit == null ? "" : `LIMIT ${req.query.limit}`;
+    let users = [];
+    if(req.query.nama || req.query.tanggal){
+        if(req.query.nama){
+            let nama = req.query.nama;
+            let query = `SELECT * FROM mh_pelanggan WHERE nama LIKE '${nama}%'`;
+            users = await db.executeQuery(query);
+        }
+
+        if(req.query.tanggal){
+            where = "WHERE ";
+            let tanggal = req.query.tanggal;
+            where += `tgl_transaksi = '${tanggal}'`;
+        }
+        
+    }
+
+    let logs = await User.getLogAllUser(where,limit,users);
+    return res.status(200).send(logs);
+})
+
 //===== SHAN
 router.get('/:id_user', async (req, res) =>{
     let verify = await vertifikasiAdmin(req, res);
