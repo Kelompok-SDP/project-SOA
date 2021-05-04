@@ -27,39 +27,6 @@ const verifyToken = (req, res)=>{
 
     return user;
 }
-// check akun Free atau tidak
-const verifyFree =(req,res)=>{
-    let user= verifyToken(req,res);
-    if(user.tipe_user=="0"){
-        next();
-    }
-    return res.status(401).send("Akun anda tidak memiliki hak akses");
-}
-// check akun Advance atau tidak
-const verifyAdvanced =(req,res)=>{
-    let user= verifyToken(req,res);
-    if(user.tipe_user=="1"){
-        next();
-    }
-    return res.status(401).send("Akun anda tidak memiliki hak akses");
-}
-// check akun Profesional atau tidak
-const verifyProfesional =(req,res)=>{
-    let user= verifyToken(req,res);
-    if(user.tipe_user=="2"){
-        next();
-    }
-    return res.status(401).send("Akun anda tidak memiliki hak akses");
-}
-// check akun Profesional atau Advance
-const verifyNotFree =(req,res)=>{
-    let user= verifyToken(req,res);
-    if(user.tipe_user!="0"){
-        next();
-    }
-    return res.status(401).send("Akun anda tidak memiliki hak akses");
-}
-
 function cekAllNumeric(inputtxt) 
 {
     var numbers = /^[-+]?[0-9]+$/;
@@ -98,9 +65,5 @@ module.exports = {
     generateToken,
     verifyToken,
     genAPIKey,
-    verifyFree,
-    verifyAdvanced,
-    verifyProfesional,
-    verifyNotFree,
     cekAllNumeric
 }

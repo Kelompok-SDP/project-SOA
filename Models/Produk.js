@@ -53,7 +53,19 @@ const getProdukById = async(id)=>{
     return data
 }
 
+const getProduk = async(where)=>{
+    let data = db.executeQuery(`select * from mh_produk ${where}`);
+    return data
+}
+
+const addDeskripsi = async(value)=>{
+    let data = db.executeQuery(`insert into mh_deskripsi_produk ${value}`);
+    return data
+}
+
 module.exports = {
    getProdusen,
-   getProdukById
+   getProdukById,
+   getProduk,
+   addDeskripsi
 }

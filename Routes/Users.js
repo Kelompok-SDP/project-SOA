@@ -2,8 +2,17 @@ const express = require("express");
 const router = express.Router();
 const uploadFile = require("../uploadFile");
 const User = require("../Models/Users");
+const Produk = require("../Models/Produk");
 const auth = require('../autentikasi');
 const emailValidator = require("../emailValidator");
+
+async function getUser(req,res){
+    let user = auth.verifyToken(req,res);
+
+    user.data = await User.getAllUser(`where email='${user.data.email}'`);
+    user.data=user.data[0];
+    return user;
+}
 
 router.post('/register',uploadFile.upload.single("foto_user"),async (req, res) => {
     let {nama, email,password,telepon,sex,tipe_user} = req.body;
@@ -17,7 +26,6 @@ router.post('/register',uploadFile.upload.single("foto_user"),async (req, res) =
     }
 
     //TODO cek email user sudah dipakai apa belum
-
     let newUser = await User.makeUser(nama,email,password,telepon,sex,tipe_user,foto_user);
 
     if(newUser?.data){
@@ -84,13 +92,7 @@ router.get('/',async (req, res) => {
     let users = await User.getAllUser(where);
     return res.status(200).send(users);
 });
-async function getUser(req,res){
-    let user = auth.verifyToken(req,res);
 
-    user.data = await User.getAllUser(`where email='${user.data.email}'`);
-    user.data=user.data[0];
-    return user;
-}
 router.get('/profil',async (req, res) => {
     let user = auth.verifyToken(req,res);
     
@@ -150,6 +152,26 @@ router.put('/gantiEmail',async (req, res) => {
     let updatedUser = await User.updateUser(`set email='${user.data.email}'`,`where email='${user.data.email}'`);
 
     return res.status(200).send("Email berhasil di ganti tolong login kembali");
+});
+router.post('/addDeskripsi',async (req, res) => {
+    let user=await getUser(req,res)
+
+    let {id_produk,isi_deskripsi}=req.body;
+
+    let _Produk = await Produk.getProduk(`where kode = '${id_produk}'`)
+
+    if(_Produk.length==0){
+        return res.status(404).send("Produk tidak ditemukan");
+    }
+
+    if(!isi_deskripsi||isi_deskripsi==""){
+        return res.status(400).send("isi deskripsi kosong");
+    }
+
+    await Produk.addDeskripsi(`values('','${isi_deskripsi}','${user.kode}','${id_produk}','0')`);
+
+
+    return res.status(201).send("berhasil menambahkan deskripsi");
 });
 
 
