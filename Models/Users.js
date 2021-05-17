@@ -65,7 +65,13 @@ const userLogin = async (email, password) => {
 }
 
 const getAllUser = async (where = '',limit) => {
-    let query = `SELECT * FROM mh_pelanggan ${where} ${limit}`;
+    let query = "";
+    if(limit !=0){
+         query = `SELECT * FROM mh_pelanggan ${where} ${limit}`;
+    }else {
+        query = `SELECT * FROM mh_pelanggan ${where} `;
+    }
+   
     let users = await db.executeQuery(query);
     for (let i = 0; i < users.length; i++) {
         const user = users[i];
@@ -111,7 +117,7 @@ const getLogAllUser = async (where,limit,users) => {
             for (let i = 0; i < users.length; i++) {
                 const user = users[i];
                 let query = `SELECT DATE_FORMAT(tgl_transaksi,\'%d-%m-%Y\') AS tgl_transaksi, 
-                kode_pelanggan, jenis_transaksi, nominal FROM log_transaksi WHERE kode_pelanggan = '${user.kode}'
+                kode_pelanggan, jenis_transaksi, keterangan, nominal FROM log_transaksi WHERE kode_pelanggan = '${user.kode}'
                  ${limit} `;
                 let Data = await db.executeQuery(query);
                 data.push(Data[0]);
@@ -121,7 +127,7 @@ const getLogAllUser = async (where,limit,users) => {
             for (let i = 0; i < users.length; i++) {
                 const user = users[i];
                 let query = `SELECT DATE_FORMAT(tgl_transaksi,\'%d-%m-%Y\') AS tgl_transaksi, 
-                kode_pelanggan, jenis_transaksi, nominal FROM log_transaksi ${where} AND kode_pelanggan = '${user.kode}'
+                kode_pelanggan, jenis_transaksi,keterangan, nominal FROM log_transaksi ${where} AND kode_pelanggan = '${user.kode}'
                     ${limit} `;
                 let Data = await db.executeQuery(query);
                 data.push(Data[0]);
@@ -132,7 +138,7 @@ const getLogAllUser = async (where,limit,users) => {
     }
     else{
         let query = `SELECT DATE_FORMAT(tgl_transaksi,\'%d-%m-%Y\') AS tgl_transaksi, 
-        kode_pelanggan, jenis_transaksi, nominal FROM log_transaksi ${where} 
+        kode_pelanggan, jenis_transaksi,keterangan, nominal FROM log_transaksi ${where} 
             ${limit} `;
         let Data = await db.executeQuery(query);
         data.push(Data[0]);
@@ -218,6 +224,14 @@ const decreaseApihit = async (apikey) =>{
     return apihit;
 }
 
+const makeLog = async (kodeuser,keterangan,total,jenis_transaksi) =>{
+    var today = new Date();
+    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    let query = `insert into log_transaksi values(0,'${date}','${kodeuser}','${jenis_transaksi}',${parseInt(total)},'${keterangan}')`
+    let data =  await db.executeQuery(query);
+    return data;
+}
+
 
 module.exports = {
     makeUser,
@@ -229,5 +243,6 @@ module.exports = {
     getUserFromAPiKey,
     decreaseApihit,
     searchUser,
-    getLogAllUser
+    getLogAllUser,
+    makeLog
 }

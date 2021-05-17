@@ -118,7 +118,7 @@ const searchProductWithLimit = async (nama, desk, limit, type, aihit) => {
     }
 }
 
-const addProduct = async (nama,kat,produsen,satuan,indik,kompos,dosis,aturan,kemasan,harga,resep,keterangan) => {
+const addProduct = async (nama,kat,produsen,satuan,indik,kompos,dosis,aturan,kemasan,harga,resep,keterangan,foto_produk) => {
     let statinput = 0; 
     let strkat; let strprod; let strsat; let strresep; let rupiah;
     let signature = 'PR';
@@ -169,11 +169,12 @@ const addProduct = async (nama,kat,produsen,satuan,indik,kompos,dosis,aturan,kem
     }else{
         statinput = 1;
     }
+
     if(statinput == 0){
         var tgl = new Date();
         let tglinsert = tgl.getDate() +"/"+ "0"+(tgl.getMonth()+1) +"/"+ tgl.getFullYear();
-        let query = `INSERT INTO MH_PRODUK VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,1,"Admin",STR_TO_DATE('${tglinsert}', '%d/%m/%Y'),NULL,"")`;
-        await db.executeQueryWithParam(query,[newKodePr,kat,produsen,satuan,nama,indik,kompos,dosis,aturan,kemasan,harga,resep,keterangan]);
+        let query = `INSERT INTO MH_PRODUK VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,"Admin",STR_TO_DATE('${tglinsert}', '%d/%m/%Y'),NULL,"")`;
+        await db.executeQueryWithParam(query,[newKodePr,kat,produsen,satuan,nama,indik,kompos,dosis,aturan,kemasan,harga,resep,keterangan,foto_produk]);
         const Data = {
             status: 201,
             msg: 'Berhasil menambahkan produk baru',
@@ -191,6 +192,7 @@ const addProduct = async (nama,kat,produsen,satuan,indik,kompos,dosis,aturan,kem
                 harga: rupiah,
                 butuh_resep: strresep,
                 keterangan: keterangan,
+                foto_produk,
                 status: 1
             }
         }
@@ -218,7 +220,7 @@ const addProduct = async (nama,kat,produsen,satuan,indik,kompos,dosis,aturan,kem
     }
 }
 
-const updProduct = async (id,produsen,harga,kemasan,keterangan) => {
+const updProduct = async (id,produsen,harga,kemasan,keterangan,foto_produk) => {
     let tmpnama; let tmpkat; let tmpprodus; let tmphar; let tmpkemas;
     let select = `SELECT * FROM MH_PRODUK WHERE KODE = '${id}'`;
     let hasil = await db.executeQuery(select);
@@ -243,14 +245,18 @@ const updProduct = async (id,produsen,harga,kemasan,keterangan) => {
             let matches = harga.match("[a-zA-Z]+");
             if(matches == null){
                 const newrupiah = convertToRp(harga);
+                let strmsg = "";
                 var tgl = new Date();
                 let tglupdate = tgl.getDate() +"/"+ "0"+(tgl.getMonth()+1) +"/"+ tgl.getFullYear();
                 let update = `UPDATE MH_PRODUK SET FK_PRODUSEN = '${produsen}',KEMASAN = '${kemasan}', HARGA = '${harga}', 
                             KETERANGAN = '${keterangan}', DIUBAH_OLEH = 'Admin', DIUBAH_PADA = STR_TO_DATE('${tglupdate}', '%d/%m/%Y') WHERE KODE = '${id}'`;
                 await db.executeQuery(update);
+                if(foto_produk){
+                    strmsg = " dan foto produk";
+                }
                 const Data = {
                     status: 200,
-                    msg: 'Berhasil mengubah data produk',
+                    msg: 'Berhasil mengubah data produk' + strmsg,
                     data:{
                         kode: id,
                         nama: tmpnama,

@@ -150,27 +150,33 @@ router.get('/', async(req, res) =>{ //iso pake jwt iso apikey, walaupun admin mb
     }
 });
 
-router.post('/', async (req, res) =>{
+router.post('/', uploadFile.uploadAddPro.single("foto_produk"), async (req, res) =>{
     let verify = await vertifikasiAdmin(req, res);
     if(!verify){
-        let nama = req.body.nama;
-        let kat = req.body.id_kategori;
-        let produsen = req.body.id_produsen;
-        let satuan = req.body.satuan;
-        let indik = req.body.indikasi;
-        let kompos = req.body.komposisi;
-        let dosis = req.body.dosis;
-        let aturan = req.body.aturan_pakai;
-        let kemasan = req.body.kemasan;
-        let harga = req.body.harga;
-        let resep = req.body.butuh_resep;
-        let keterangan = req.body.keterangan;
-        let insertProd = await Produk.addProduct(nama,kat,produsen,satuan,indik,kompos,dosis,aturan,kemasan,harga,resep,keterangan);
-        if(insertProd?.data){
-
-            return res.status(insertProd.status).send({
-                Message: insertProd.msg,
-                data: insertProd.data     
+        if(req.file){
+            let nama = req.body.nama;
+            let kat = req.body.id_kategori;
+            let produsen = req.body.id_produsen;
+            let satuan = req.body.satuan;
+            let indik = req.body.indikasi;
+            let kompos = req.body.komposisi;
+            let dosis = req.body.dosis;
+            let aturan = req.body.aturan_pakai;
+            let kemasan = req.body.kemasan;
+            let harga = req.body.harga;
+            let resep = req.body.butuh_resep;
+            let keterangan = req.body.keterangan;
+            let foto_produk = "./Public/uploads/"+req.file.filename;
+            let insertProd = await Produk.addProduct(nama,kat,produsen,satuan,indik,kompos,dosis,aturan,kemasan,harga,resep,keterangan,foto_produk);
+            if(insertProd?.data){
+                return res.status(insertProd.status).send({
+                    Message: insertProd.msg,
+                    data: insertProd.data     
+                });
+            }
+        }else{
+            return res.status(400).send({
+                Message: "Foto tidak ditemukan, harap upload foto"
             });
         }
         return res.status(insertProd.status).send({
@@ -180,7 +186,7 @@ router.post('/', async (req, res) =>{
     }
 });
 
-router.put('/', async (req, res) =>{
+router.put('/', uploadFile.uploadUpdPro.single("foto_produk"), async (req, res) =>{
     let verify = await vertifikasiAdmin(req, res);
     if(!verify){
         let id = req.body.id_produk;
@@ -188,7 +194,14 @@ router.put('/', async (req, res) =>{
         let harga = req.body.harga;
         let kemasan = req.body.kemasan;
         let keterangan = req.body.keterangan;
-        let updateProd = await Produk.updProduct(id,produsen,harga,kemasan,keterangan);
+        let updateProd = null;
+        let foto_produk = "";
+        if(req.file){
+            foto_produk = "./Public/uploads/"+req.file.filename;
+            updateProd = await Produk.updProduct(id,produsen,harga,kemasan,keterangan,foto_produk);
+        }else{
+            updateProd = await Produk.updProduct(id,produsen,harga,kemasan,keterangan,foto_produk);
+        }
         if(updateProd?.data){
             return res.status(updateProd.status).send({
                 Message: updateProd.msg,

@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.1
+-- version 5.0.4
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Waktu pembuatan: 28 Apr 2021 pada 10.38
--- Versi server: 10.4.11-MariaDB
--- Versi PHP: 7.4.2
+-- Host: 127.0.0.1:3307
+-- Waktu pembuatan: 05 Bulan Mei 2021 pada 07.05
+-- Versi server: 10.4.17-MariaDB
+-- Versi PHP: 8.0.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -23,6 +22,30 @@ SET time_zone = "+00:00";
 --
 CREATE DATABASE IF NOT EXISTS `db_apotik_soa` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `db_apotik_soa`;
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `log_transaksi`
+--
+
+DROP TABLE IF EXISTS `log_transaksi`;
+CREATE TABLE `log_transaksi` (
+  `kode` int(11) NOT NULL,
+  `tgl_transaksi` date NOT NULL,
+  `kode_pelanggan` varchar(50) NOT NULL,
+  `jenis_transaksi` varchar(100) NOT NULL,
+  `nominal` bigint(20) NOT NULL,
+  `keterangan` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data untuk tabel `log_transaksi`
+--
+
+INSERT INTO `log_transaksi` (`kode`, `tgl_transaksi`, `kode_pelanggan`, `jenis_transaksi`, `nominal`, `keterangan`) VALUES
+(1, '2021-05-04', 'PE_YY001', 'Upgrade', 10000, ''),
+(3, '2021-05-05', 'PE_AM001', 'Recharge', 200000, 'recharge api Hit sebesar :200000');
 
 -- --------------------------------------------------------
 
@@ -80,105 +103,105 @@ CREATE TABLE `mh_pelanggan` (
 --
 
 INSERT INTO `mh_pelanggan` (`kode`, `nama`, `email`, `password`, `telepon`, `jeniskelamin`, `api_hit`, `api_key`, `saldo`, `tipe_user`) VALUES
-('PE_AM001', 'Anita Mandala', 'caket.haryanti@manullang.name', '', '(+62) 678 4799 351', 'P', '0', '0', 0, 0),
-('PE_AN001', 'Ani Najmudin', 'hakim.agus@sudiati.name', '', '0589 7354 192', 'P', '0', '0', 0, 0),
-('PE_AR001', 'Atmaja Rajata', 'qkuswandari@gmail.co.id', '', '0854 3756 628', 'L', '0', '0', 0, 0),
-('PE_AS001', 'Ade Sihombing', 'firgantoro.clara@yahoo.com', '', '0245 6939 0168', 'P', '0', '0', 0, 0),
-('PE_AT001', 'Atma', 'sarah46@rahayu.web.id', '', '(+62) 846 292 123', 'L', '0', '0', 0, 0),
-('PE_AU001', 'Amalia Utami', 'puji03@yahoo.co.id', '', '(+62) 992 4328 6673', 'P', '0', '0', 0, 0),
-('PE_AU002', 'Azalea Uwais', 'galang.hartati@latupono.sch.id', '', '0496 5272 714', 'P', '0', '0', 0, 0),
-('PE_AY001', 'Ayu', 'kuswandari.diana@pradana.asia', '', '0834 6439 442', 'P', '0', '0', 0, 0),
-('PE_BA001', 'Balapati', 'ddamanik@gmail.co.id', '', '0336 7907 5491', 'L', '0', '0', 0, 0),
-('PE_BA002', 'Bagya', 'hyulianti@waluyo.web.id', '', '0517 0820 056', 'L', '0', '0', 0, 0),
-('PE_CA001', 'Cahyono', 'pyulianti@puspita.co.id', '', '0888 1669 154', 'L', '0', '0', 0, 0),
-('PE_CA002', 'Cahyadi', 'mala.situmorang@gmail.com', '', '(+62) 501 0334 5784', 'L', '0', '0', 0, 0),
-('PE_CN001', 'Cinta Natsir', 'gunarto.daryani@gmail.com', '', '(+62) 26 7064 733', 'P', '0', '0', 0, 0),
-('PE_CP001', 'Carla Padmasari', 'soleh27@gmail.com', '', '(+62) 941 3343 4736', 'P', '0', '0', 0, 0),
-('PE_CS001', 'Cakrawangsa Sitorus', 'elma51@novitasari.sch.id', '', '026 6815 893', 'L', '0', '0', 0, 0),
-('PE_CW001', 'Cager Wahyuni', 'lulut43@yahoo.com', '', '(+62) 26 3378 145', 'L', '0', '0', 0, 0),
-('PE_DA001', 'Daru', 'wasita.putri@yahoo.co.id', '', '(+62) 296 5555 1047', 'L', '0', '0', 0, 0),
-('PE_DK001', 'Diah Kuswoyo', 'makara70@gmail.co.id', '', '0222 5047 1788', 'P', '0', '0', 0, 0),
-('PE_DM001', 'Dian Maheswara', 'samiah47@yahoo.com', '', '0822 8512 3512', 'P', '0', '0', 0, 0),
-('PE_DN001', 'Daliono Nuraini', 'padma35@yahoo.co.id', '', '0561 1147 3305', 'L', '0', '0', 0, 0),
-('PE_DU001', 'Diana Uyainah', 'lalita01@pradana.info', '', '(+62) 484 1108 793', 'P', '0', '0', 0, 0),
-('PE_ED001', 'Embuh Damanik', 'hasna20@yahoo.com', '', '(+62) 277 2739 8746', 'L', '0', '0', 0, 0),
-('PE_EL001', 'Elvina', 'silvia64@budiman.biz.id', '', '0318 1351 979', 'P', '0', '0', 0, 0),
-('PE_ES001', 'Eman Suryatmi', 'ksafitri@siregar.web.id', '', '0744 5909 8677', 'L', '0', '0', 0, 0),
-('PE_EV001', 'Eva', 'natsir.raihan@gmail.co.id', '', '0210 1642 2136', 'P', '0', '0', 0, 0),
-('PE_GA001', 'Gamani', 'koko58@yuliarti.go.id', '', '0739 9261 3526', 'L', '0', '0', 0, 0),
-('PE_GA002', 'Gandi', 'bajragin17@gmail.com', '', '(+62) 23 8920 6723', 'L', '0', '0', 0, 0),
-('PE_HA001', 'Hari', 'dirja54@wastuti.name', '', '0856 9071 878', 'L', '0', '0', 0, 0),
-('PE_HE001', 'Hesti', 'luwes48@yolanda.name', '', '(+62) 973 8517 535', 'P', '0', '0', 0, 0),
-('PE_HP001', 'Hendri Prayoga', 'krajata@januar.name', '', '(+62) 345 0869 385', 'L', '0', '0', 0, 0),
-('PE_HS001', 'Harsaya Simbolon', 'mmulyani@saragih.asia', '', '0827 1567 1726', 'L', '0', '0', 0, 0),
-('PE_HS002', 'Harsaya Saptono', 'dpudjiastuti@yahoo.co.id', '', '025 5501 8620', 'L', '0', '0', 0, 0),
-('PE_IA001', 'Ira Astuti', 'nprasasta@gmail.co.id', '', '0498 6637 4557', 'P', '0', '0', 0, 0),
-('PE_ID001', 'Ida', 'adriansyah.sadina@yahoo.com', '', '(+62) 652 0358 967', 'P', '0', '0', 0, 0),
-('PE_IF001', 'Ikhsan Firgantoro', 'opan01@lestari.net', '', '0361 1774 1052', 'L', '0', '0', 0, 0),
-('PE_IH001', 'Iriana Hardiansyah', 'legawa63@gmail.com', '', '(+62) 527 6923 5022', 'P', '0', '0', 0, 0),
-('PE_IK001', 'Ikhsan', 'nalar86@gmail.com', '', '(+62) 784 3164 7059', 'L', '0', '0', 0, 0),
-('PE_IR001', 'Irfan', 'tasdik.rajasa@suryono.mil.id', '', '0833 8218 2212', 'L', '0', '0', 0, 0),
-('PE_IS001', 'Ikhsan Sihombing', 'ymansur@puspasari.my.id', '', '025 6526 5647', 'L', '0', '0', 0, 0),
-('PE_JA001', 'Jamil', 'omarpaung@gmail.co.id', '', '0409 9433 2433', 'L', '0', '0', 0, 0),
-('PE_JA002', 'Jamalia', 'jail.prayoga@suryono.or.id', '', '(+62) 20 4055 4891', 'P', '0', '0', 0, 0),
-('PE_JE001', 'Jelita', 'bmelani@yahoo.co.id', '', '0334 8531 0539', 'P', '0', '0', 0, 0),
-('PE_JH001', 'Jayadi Hutagalung', 'vicky.yuniar@yahoo.com', '', '(+62) 258 5253 2054', 'L', '0', '0', 0, 0),
-('PE_JN001', 'Jaya Nababan', 'rpuspasari@marbun.go.id', '', '0414 4312 1725', 'L', '0', '0', 0, 0),
-('PE_JO001', 'Jono', 'wasita.zelaya@yahoo.com', '', '(+62) 20 0384 929', 'L', '0', '0', 0, 0),
-('PE_JT001', 'Juli Tampubolon', 'fnasyidah@yahoo.co.id', '', '028 8154 585', 'P', '0', '0', 0, 0),
-('PE_JU001', 'Jumadi', 'ganjaran.gunawan@gmail.co.id', '', '(+62) 771 9213 151', 'L', '0', '0', 0, 0),
-('PE_KA001', 'Karma Agustina', 'apranowo@wahyudin.info', '', '(+62) 663 0650 415', 'L', '0', '0', 0, 0),
-('PE_KA002', 'Kawaya', 'dmaryati@utama.com', '', '0731 2358 632', 'L', '0', '0', 0, 0),
-('PE_KA003', 'Kamaria', 'yuliarti.jelita@gmail.co.id', '', '(+62) 789 1147 1282', 'P', '0', '0', 0, 0),
-('PE_KA004', 'Kamila', 'perkasa.waskita@yahoo.com', '', '0997 0209 3121', 'P', '0', '0', 0, 0),
-('PE_KH001', 'Kani Hakim', 'panca61@yahoo.co.id', '', '(+62) 884 3002 133', 'P', '0', '0', 0, 0),
-('PE_KI001', 'Kiandra', 'kamaria01@lestari.or.id', '', '0397 0649 925', 'P', '0', '0', 0, 0),
-('PE_KP001', 'Kamal Prayoga', 'cornelia10@nashiruddin.name', '', '(+62) 868 0531 6449', 'L', '0', '0', 0, 0),
-('PE_LA001', 'Laksana', 'rahmi.mayasari@susanti.ac.id', '', '0258 4213 4167', 'L', '0', '0', 0, 0),
-('PE_LL001', 'Lasmono Lailasari', 'nurdiyanti.jelita@yahoo.com', '', '0561 3235 210', 'L', '0', '0', 0, 0),
-('PE_LU001', 'Luis', 'mardhiyah.wisnu@namaga.com', '', '0824 269 886', 'L', '0', '0', 0, 0),
-('PE_LU002', 'Luwes', 'bsuryatmi@gmail.co.id', '', '(+62) 515 3596 461', 'L', '0', '0', 0, 0),
-('PE_MA001', 'Makara', 'galak62@gmail.com', '', '0908 5677 3605', 'L', '0', '0', 0, 0),
-('PE_MN001', 'Maman Nugroho', 'pratama.jamalia@irawan.org', '', '0677 2001 1308', 'L', '0', '0', 0, 0),
-('PE_MR001', 'Mila Rahimah', 'wulandari.restu@gmail.co.id', '', '025 9086 289', 'P', '0', '0', 0, 0),
-('PE_MU001', 'Mulyanto', 'marbun.sari@aryani.net', '', '028 0930 057', 'L', '0', '0', 0, 0),
-('PE_NA001', 'Natalia', 'waskita.victoria@gmail.com', '', '0677 5735 309', 'P', '0', '0', 0, 0),
-('PE_NA002', 'Nardi', 'belinda95@novitasari.sch.id', '', '(+62) 722 4611 314', 'L', '0', '0', 0, 0),
-('PE_NA003', 'Naradi', 'oprakasa@gmail.com', '', '(+62) 206 7008 188', 'L', '0', '0', 0, 0),
-('PE_NH001', 'Nardi Hidayat', 'zaenab.pranowo@gmail.co.id', '', '0575 4226 890', 'L', '0', '0', 0, 0),
-('PE_NP001', 'Novi Permadi', 'yunita.kuswandari@saputra.name', '', '0545 6055 1608', 'P', '0', '0', 0, 0),
-('PE_OH001', 'Oliva Habibi', 'jaka.mandala@gmail.com', '', '022 0285 3808', 'P', '0', '0', 0, 0),
-('PE_OZ001', 'Ozy', 'aditya16@waskita.web.id', '', '(+62) 21 6522 5480', 'L', '0', '0', 0, 0),
-('PE_PM001', 'Putri Manullang', 'pratiwi.gasti@gmail.co.id', '', '0847 1759 838', 'P', '0', '0', 0, 0),
-('PE_PM002', 'Pardi Mulyani', 'widodo.aditya@gmail.com', '', '0832 2324 568', 'L', '0', '0', 0, 0),
-('PE_PM003', 'Pranawa Mardhiyah', 'yuni37@yahoo.co.id', '', '0794 3191 8130', 'L', '0', '0', 0, 0),
-('PE_PR001', 'Prasetya', 'kajen.firmansyah@yahoo.co.id', '', '0395 1571 6194', 'L', '0', '0', 0, 0),
-('PE_PS001', 'Panca Salahudin', 'fbudiyanto@saptono.com', '', '0989 6826 5263', 'L', '0', '0', 0, 0),
-('PE_RA001', 'Rama', 'ckuswandari@astuti.com', '', '0259 0614 799', 'L', '0', '0', 0, 0),
-('PE_RH001', 'Raharja Halim', 'mwidiastuti@yahoo.co.id', '', '0770 3805 306', 'L', '0', '0', 0, 0),
-('PE_RP001', 'Rachel Prastuti', 'nsiregar@yahoo.co.id', '', '(+62) 509 3363 238', 'P', '0', '0', 0, 0),
-('PE_RW001', 'Ratna Winarsih', 'megantara.rizki@usada.tv', '', '0308 7258 142', 'P', '0', '0', 0, 0),
-('PE_SA001', 'Sadina', 'dfarida@yahoo.com', '', '0470 9631 932', 'P', '0', '0', 0, 0),
-('PE_SI001', 'Siti', 'yuliarti.eka@usada.sch.id', '', '0813 208 136', 'P', '0', '0', 0, 0),
-('PE_SL001', 'Salwa Laksmiwati', 'najib.lestari@wasita.net', '', '0379 9146 3028', 'P', '0', '0', 0, 0),
-('PE_SM001', 'Safina Mustofa', 'csetiawan@gmail.com', '', '0636 8200 747', 'P', '0', '0', 0, 0),
-('PE_SW001', 'Samiah Wibisono', 'septi14@yahoo.com', '', '(+62) 852 067 467', 'P', '0', '0', 0, 0),
-('PE_SY001', 'Syahrini', 'saragih.novi@gmail.com', '', '0751 0519 4595', 'P', '0', '0', 0, 0),
-('PE_TD001', 'Tina Dongoran', 'farida.ciaobella@damanik.info', '', '0896 419 720', 'P', '0', '0', 0, 0),
-('PE_TI001', 'Tina', 'aryani.nadine@yahoo.co.id', '', '0425 7195 783', 'P', '0', '0', 0, 0),
-('PE_TS001', 'Tedi Setiawan', 'tira.permadi@santoso.go.id', '', '(+62) 476 6366 518', 'L', '0', '0', 0, 0),
-('PE_TW001', 'Tirta Wijayanti', 'wpuspita@gmail.co.id', '', '(+62) 397 5987 175', 'L', '0', '0', 0, 0),
-('PE_UL001', 'Ulva', 'utami.irwan@sudiati.co', '', '(+62) 207 2805 141', 'P', '0', '0', 0, 0),
-('PE_US001', 'Usyi', 'kayla.samosir@rajata.desa.id', '', '0741 6573 781', 'P', '0', '0', 0, 0),
-('PE_VM001', 'Victoria Marpaung', 'hastuti.ghaliyati@gmail.com', '', '(+62) 24 0188 9001', 'P', '0', '0', 0, 0),
-('PE_WI001', 'Wirda', 'lukman88@hutagalung.ac.id', '', '0852 8001 8049', 'P', '0', '0', 0, 0),
-('PE_WP001', 'Warta Pertiwi', 'rahmi.manullang@gmail.co.id', '', '0354 8696 184', 'L', '0', '0', 0, 0),
-('PE_WW001', 'Wani Winarsih', 'gunarto.tiara@pradipta.go.id', '', '0532 0000 8255', 'P', '0', '0', 0, 0),
-('PE_YA001', 'Yani', 'lmustofa@iswahyudi.name', '', '0929 3260 118', 'P', '0', '0', 0, 0),
-('PE_YF001', 'Yusuf Fujiati', 'ganda81@hutasoit.mil.id', '', '(+62) 273 9714 163', 'L', '0', '0', 0, 0),
-('PE_YU001', 'Yulia', 'juli.pratama@haryanti.or.id', '', '(+62) 844 4301 0503', 'P', '0', '0', 0, 0),
-('PE_ZP001', 'Zelda Padmasari', 'wijayanti.winda@gmail.com', '', '(+62) 418 9588 7750', 'P', '0', '0', 0, 0),
-('PE_ZS001', 'Zizi Siregar', 'tri50@andriani.mil.id', '', '0528 8766 0849', 'P', '0', '0', 0, 0);
+('PE_AM001', 'Anita Mandala', 'caket.haryanti@manullang.name', 'aa', '(+62) 678 4799 351', 'P', 320, 'asdkasjASSS', 1200000, 2),
+('PE_AN001', 'Ani Najmudin', 'hakim.agus@sudiati.name', '', '0589 7354 192', 'P', 0, '0', 0, 0),
+('PE_AR001', 'Atmaja Rajata', 'qkuswandari@gmail.co.id', '', '0854 3756 628', 'L', 0, '0', 0, 0),
+('PE_AS001', 'Ade Sihombing', 'firgantoro.clara@yahoo.com', '', '0245 6939 0168', 'P', 0, '0', 0, 0),
+('PE_AT001', 'Atma', 'sarah46@rahayu.web.id', '', '(+62) 846 292 123', 'L', 0, '0', 0, 0),
+('PE_AU001', 'Amalia Utami', 'puji03@yahoo.co.id', '', '(+62) 992 4328 6673', 'P', 0, '0', 0, 0),
+('PE_AU002', 'Azalea Uwais', 'galang.hartati@latupono.sch.id', '', '0496 5272 714', 'P', 0, '0', 0, 0),
+('PE_AY001', 'Ayu', 'kuswandari.diana@pradana.asia', '', '0834 6439 442', 'P', 0, '0', 0, 0),
+('PE_BA001', 'Balapati', 'ddamanik@gmail.co.id', '', '0336 7907 5491', 'L', 0, '0', 0, 0),
+('PE_BA002', 'Bagya', 'hyulianti@waluyo.web.id', '', '0517 0820 056', 'L', 0, '0', 0, 0),
+('PE_CA001', 'Cahyono', 'pyulianti@puspita.co.id', '', '0888 1669 154', 'L', 0, '0', 0, 0),
+('PE_CA002', 'Cahyadi', 'mala.situmorang@gmail.com', '', '(+62) 501 0334 5784', 'L', 0, '0', 0, 0),
+('PE_CN001', 'Cinta Natsir', 'gunarto.daryani@gmail.com', '', '(+62) 26 7064 733', 'P', 0, '0', 0, 0),
+('PE_CP001', 'Carla Padmasari', 'soleh27@gmail.com', '', '(+62) 941 3343 4736', 'P', 0, '0', 0, 0),
+('PE_CS001', 'Cakrawangsa Sitorus', 'elma51@novitasari.sch.id', '', '026 6815 893', 'L', 0, '0', 0, 0),
+('PE_CW001', 'Cager Wahyuni', 'lulut43@yahoo.com', '', '(+62) 26 3378 145', 'L', 0, '0', 0, 0),
+('PE_DA001', 'Daru', 'wasita.putri@yahoo.co.id', '', '(+62) 296 5555 1047', 'L', 0, '0', 0, 0),
+('PE_DK001', 'Diah Kuswoyo', 'makara70@gmail.co.id', '', '0222 5047 1788', 'P', 0, '0', 0, 0),
+('PE_DM001', 'Dian Maheswara', 'samiah47@yahoo.com', '', '0822 8512 3512', 'P', 0, '0', 0, 0),
+('PE_DN001', 'Daliono Nuraini', 'padma35@yahoo.co.id', '', '0561 1147 3305', 'L', 0, '0', 0, 0),
+('PE_DU001', 'Diana Uyainah', 'lalita01@pradana.info', '', '(+62) 484 1108 793', 'P', 0, '0', 0, 0),
+('PE_ED001', 'Embuh Damanik', 'hasna20@yahoo.com', '', '(+62) 277 2739 8746', 'L', 0, '0', 0, 0),
+('PE_EL001', 'Elvina', 'silvia64@budiman.biz.id', '', '0318 1351 979', 'P', 0, '0', 0, 0),
+('PE_ES001', 'Eman Suryatmi', 'ksafitri@siregar.web.id', '', '0744 5909 8677', 'L', 0, '0', 0, 0),
+('PE_EV001', 'Eva', 'natsir.raihan@gmail.co.id', '', '0210 1642 2136', 'P', 0, '0', 0, 0),
+('PE_GA001', 'Gamani', 'koko58@yuliarti.go.id', '', '0739 9261 3526', 'L', 0, '0', 0, 0),
+('PE_GA002', 'Gandi', 'bajragin17@gmail.com', '', '(+62) 23 8920 6723', 'L', 0, '0', 0, 0),
+('PE_HA001', 'Hari', 'dirja54@wastuti.name', '', '0856 9071 878', 'L', 0, '0', 0, 0),
+('PE_HE001', 'Hesti', 'luwes48@yolanda.name', '', '(+62) 973 8517 535', 'P', 0, '0', 0, 0),
+('PE_HP001', 'Hendri Prayoga', 'krajata@januar.name', '', '(+62) 345 0869 385', 'L', 0, '0', 0, 0),
+('PE_HS001', 'Harsaya Simbolon', 'mmulyani@saragih.asia', '', '0827 1567 1726', 'L', 0, '0', 0, 0),
+('PE_HS002', 'Harsaya Saptono', 'dpudjiastuti@yahoo.co.id', '', '025 5501 8620', 'L', 0, '0', 0, 0),
+('PE_IA001', 'Ira Astuti', 'nprasasta@gmail.co.id', '', '0498 6637 4557', 'P', 0, '0', 0, 0),
+('PE_ID001', 'Ida', 'adriansyah.sadina@yahoo.com', '', '(+62) 652 0358 967', 'P', 0, '0', 0, 0),
+('PE_IF001', 'Ikhsan Firgantoro', 'opan01@lestari.net', '', '0361 1774 1052', 'L', 0, '0', 0, 0),
+('PE_IH001', 'Iriana Hardiansyah', 'legawa63@gmail.com', '', '(+62) 527 6923 5022', 'P', 0, '0', 0, 0),
+('PE_IK001', 'Ikhsan', 'nalar86@gmail.com', '', '(+62) 784 3164 7059', 'L', 0, '0', 0, 0),
+('PE_IR001', 'Irfan', 'tasdik.rajasa@suryono.mil.id', '', '0833 8218 2212', 'L', 0, '0', 0, 0),
+('PE_IS001', 'Ikhsan Sihombing', 'ymansur@puspasari.my.id', '', '025 6526 5647', 'L', 0, '0', 0, 0),
+('PE_JA001', 'Jamil', 'omarpaung@gmail.co.id', '', '0409 9433 2433', 'L', 0, '0', 0, 0),
+('PE_JA002', 'Jamalia', 'jail.prayoga@suryono.or.id', '', '(+62) 20 4055 4891', 'P', 0, '0', 0, 0),
+('PE_JE001', 'Jelita', 'bmelani@yahoo.co.id', '', '0334 8531 0539', 'P', 0, '0', 0, 0),
+('PE_JH001', 'Jayadi Hutagalung', 'vicky.yuniar@yahoo.com', '', '(+62) 258 5253 2054', 'L', 0, '0', 0, 0),
+('PE_JN001', 'Jaya Nababan', 'rpuspasari@marbun.go.id', '', '0414 4312 1725', 'L', 0, '0', 0, 0),
+('PE_JO001', 'Jono', 'wasita.zelaya@yahoo.com', '', '(+62) 20 0384 929', 'L', 0, '0', 0, 0),
+('PE_JT001', 'Juli Tampubolon', 'fnasyidah@yahoo.co.id', '', '028 8154 585', 'P', 0, '0', 0, 0),
+('PE_JU001', 'Jumadi', 'ganjaran.gunawan@gmail.co.id', '', '(+62) 771 9213 151', 'L', 0, '0', 0, 0),
+('PE_KA001', 'Karma Agustina', 'apranowo@wahyudin.info', '', '(+62) 663 0650 415', 'L', 0, '0', 0, 0),
+('PE_KA002', 'Kawaya', 'dmaryati@utama.com', '', '0731 2358 632', 'L', 0, '0', 0, 0),
+('PE_KA003', 'Kamaria', 'yuliarti.jelita@gmail.co.id', '', '(+62) 789 1147 1282', 'P', 0, '0', 0, 0),
+('PE_KA004', 'Kamila', 'perkasa.waskita@yahoo.com', '', '0997 0209 3121', 'P', 0, '0', 0, 0),
+('PE_KH001', 'Kani Hakim', 'panca61@yahoo.co.id', '', '(+62) 884 3002 133', 'P', 0, '0', 0, 0),
+('PE_KI001', 'Kiandra', 'kamaria01@lestari.or.id', '', '0397 0649 925', 'P', 0, '0', 0, 0),
+('PE_KP001', 'Kamal Prayoga', 'cornelia10@nashiruddin.name', '', '(+62) 868 0531 6449', 'L', 0, '0', 0, 0),
+('PE_LA001', 'Laksana', 'rahmi.mayasari@susanti.ac.id', '', '0258 4213 4167', 'L', 0, '0', 0, 0),
+('PE_LL001', 'Lasmono Lailasari', 'nurdiyanti.jelita@yahoo.com', '', '0561 3235 210', 'L', 0, '0', 0, 0),
+('PE_LU001', 'Luis', 'mardhiyah.wisnu@namaga.com', '', '0824 269 886', 'L', 0, '0', 0, 0),
+('PE_LU002', 'Luwes', 'bsuryatmi@gmail.co.id', '', '(+62) 515 3596 461', 'L', 0, '0', 0, 0),
+('PE_MA001', 'Makara', 'galak62@gmail.com', '', '0908 5677 3605', 'L', 0, '0', 0, 0),
+('PE_MN001', 'Maman Nugroho', 'pratama.jamalia@irawan.org', '', '0677 2001 1308', 'L', 0, '0', 0, 0),
+('PE_MR001', 'Mila Rahimah', 'wulandari.restu@gmail.co.id', '', '025 9086 289', 'P', 0, '0', 0, 0),
+('PE_MU001', 'Mulyanto', 'marbun.sari@aryani.net', '', '028 0930 057', 'L', 0, '0', 0, 0),
+('PE_NA001', 'Natalia', 'waskita.victoria@gmail.com', '', '0677 5735 309', 'P', 0, '0', 0, 0),
+('PE_NA002', 'Nardi', 'belinda95@novitasari.sch.id', '', '(+62) 722 4611 314', 'L', 0, '0', 0, 0),
+('PE_NA003', 'Naradi', 'oprakasa@gmail.com', '', '(+62) 206 7008 188', 'L', 0, '0', 0, 0),
+('PE_NH001', 'Nardi Hidayat', 'zaenab.pranowo@gmail.co.id', '', '0575 4226 890', 'L', 0, '0', 0, 0),
+('PE_NP001', 'Novi Permadi', 'yunita.kuswandari@saputra.name', '', '0545 6055 1608', 'P', 0, '0', 0, 0),
+('PE_OH001', 'Oliva Habibi', 'jaka.mandala@gmail.com', '', '022 0285 3808', 'P', 0, '0', 0, 0),
+('PE_OZ001', 'Ozy', 'aditya16@waskita.web.id', '', '(+62) 21 6522 5480', 'L', 0, '0', 0, 0),
+('PE_PM001', 'Putri Manullang', 'pratiwi.gasti@gmail.co.id', '', '0847 1759 838', 'P', 0, '0', 0, 0),
+('PE_PM002', 'Pardi Mulyani', 'widodo.aditya@gmail.com', '', '0832 2324 568', 'L', 0, '0', 0, 0),
+('PE_PM003', 'Pranawa Mardhiyah', 'yuni37@yahoo.co.id', '', '0794 3191 8130', 'L', 0, '0', 0, 0),
+('PE_PR001', 'Prasetya', 'kajen.firmansyah@yahoo.co.id', '', '0395 1571 6194', 'L', 0, '0', 0, 0),
+('PE_PS001', 'Panca Salahudin', 'fbudiyanto@saptono.com', '', '0989 6826 5263', 'L', 0, '0', 0, 0),
+('PE_RA001', 'Rama', 'ckuswandari@astuti.com', '', '0259 0614 799', 'L', 0, '0', 0, 0),
+('PE_RH001', 'Raharja Halim', 'mwidiastuti@yahoo.co.id', '', '0770 3805 306', 'L', 0, '0', 0, 0),
+('PE_RP001', 'Rachel Prastuti', 'nsiregar@yahoo.co.id', '', '(+62) 509 3363 238', 'P', 0, '0', 0, 0),
+('PE_RW001', 'Ratna Winarsih', 'megantara.rizki@usada.tv', '', '0308 7258 142', 'P', 0, '0', 0, 0),
+('PE_SA001', 'Sadina', 'dfarida@yahoo.com', '', '0470 9631 932', 'P', 0, '0', 0, 0),
+('PE_SI001', 'Siti', 'yuliarti.eka@usada.sch.id', '', '0813 208 136', 'P', 0, '0', 0, 0),
+('PE_SL001', 'Salwa Laksmiwati', 'najib.lestari@wasita.net', '', '0379 9146 3028', 'P', 0, '0', 0, 0),
+('PE_SM001', 'Safina Mustofa', 'csetiawan@gmail.com', '', '0636 8200 747', 'P', 0, '0', 0, 0),
+('PE_SW001', 'Samiah Wibisono', 'septi14@yahoo.com', '', '(+62) 852 067 467', 'P', 0, '0', 0, 0),
+('PE_SY001', 'Syahrini', 'saragih.novi@gmail.com', '', '0751 0519 4595', 'P', 0, '0', 0, 0),
+('PE_TD001', 'Tina Dongoran', 'farida.ciaobella@damanik.info', '', '0896 419 720', 'P', 0, '0', 0, 0),
+('PE_TI001', 'Tina', 'aryani.nadine@yahoo.co.id', '', '0425 7195 783', 'P', 0, '0', 0, 0),
+('PE_TS001', 'Tedi Setiawan', 'tira.permadi@santoso.go.id', '', '(+62) 476 6366 518', 'L', 0, '0', 0, 0),
+('PE_TW001', 'Tirta Wijayanti', 'wpuspita@gmail.co.id', '', '(+62) 397 5987 175', 'L', 0, '0', 0, 0),
+('PE_UL001', 'Ulva', 'utami.irwan@sudiati.co', '', '(+62) 207 2805 141', 'P', 0, '0', 0, 0),
+('PE_US001', 'Usyi', 'kayla.samosir@rajata.desa.id', '', '0741 6573 781', 'P', 0, '0', 0, 0),
+('PE_VM001', 'Victoria Marpaung', 'hastuti.ghaliyati@gmail.com', '', '(+62) 24 0188 9001', 'P', 0, '0', 0, 0),
+('PE_WI001', 'Wirda', 'lukman88@hutagalung.ac.id', '', '0852 8001 8049', 'P', 0, '0', 0, 0),
+('PE_WP001', 'Warta Pertiwi', 'rahmi.manullang@gmail.co.id', '', '0354 8696 184', 'L', 0, '0', 0, 0),
+('PE_WW001', 'Wani Winarsih', 'gunarto.tiara@pradipta.go.id', '', '0532 0000 8255', 'P', 0, '0', 0, 0),
+('PE_YA001', 'Yani', 'lmustofa@iswahyudi.name', '', '0929 3260 118', 'P', 0, '0', 0, 0),
+('PE_YF001', 'Yusuf Fujiati', 'ganda81@hutasoit.mil.id', '', '(+62) 273 9714 163', 'L', 0, '0', 0, 0),
+('PE_YU001', 'Yulia', 'juli.pratama@haryanti.or.id', '', '(+62) 844 4301 0503', 'P', 0, '0', 0, 0),
+('PE_ZP001', 'Zelda Padmasari', 'wijayanti.winda@gmail.com', '', '(+62) 418 9588 7750', 'P', 0, '0', 0, 0),
+('PE_ZS001', 'Zizi Siregar', 'tri50@andriani.mil.id', '', '0528 8766 0849', 'P', 0, '0', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -1001,6 +1024,12 @@ INSERT INTO `th_stok` (`kode`, `fk_produk`, `waktu_transaksi`, `tgl_produksi`, `
 --
 
 --
+-- Indeks untuk tabel `log_transaksi`
+--
+ALTER TABLE `log_transaksi`
+  ADD PRIMARY KEY (`kode`);
+
+--
 -- Indeks untuk tabel `mh_kategori`
 --
 ALTER TABLE `mh_kategori`
@@ -1070,6 +1099,16 @@ ALTER TABLE `th_stok`
   ADD KEY `fk_produk` (`fk_produk`);
 
 --
+-- AUTO_INCREMENT untuk tabel yang dibuang
+--
+
+--
+-- AUTO_INCREMENT untuk tabel `log_transaksi`
+--
+ALTER TABLE `log_transaksi`
+  MODIFY `kode` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
 --
 
@@ -1111,50 +1150,6 @@ ALTER TABLE `th_racik`
 --
 ALTER TABLE `th_stok`
   ADD CONSTRAINT `th_stok_ibfk_1` FOREIGN KEY (`fk_produk`) REFERENCES `mh_produk` (`kode`);
-COMMIT;
-
-
--- --------------------------------------------------------
-
---
--- Struktur dari tabel `log_transaksi`
---
-
-DROP TABLE IF EXISTS `log_transaksi`;
-CREATE TABLE `log_transaksi` (
-  `kode` int(11) NOT NULL,
-  `tgl_transaksi` date NOT NULL,
-  `kode_pelanggan` varchar(50) NOT NULL,
-  `jenis_transaksi` varchar(100) NOT NULL,
-  `nominal` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data untuk tabel `log_transaksi`
---
-
-INSERT INTO `log_transaksi` (`kode`, `tgl_transaksi`, `kode_pelanggan`, `jenis_transaksi`, `nominal`) VALUES
-(1, '2021-05-04', 'PE_YY001', 'Upgrade', 10000);
-
---
--- Indexes for dumped tables
---
-
---
--- Indeks untuk tabel `log_transaksi`
---
-ALTER TABLE `log_transaksi`
-  ADD PRIMARY KEY (`kode`);
-
---
--- AUTO_INCREMENT untuk tabel yang dibuang
---
-
---
--- AUTO_INCREMENT untuk tabel `log_transaksi`
---
-ALTER TABLE `log_transaksi`
-  MODIFY `kode` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

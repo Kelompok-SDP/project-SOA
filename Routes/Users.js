@@ -11,7 +11,7 @@ const db = require('../Database');
 async function getUser(req,res){
     let user = auth.verifyToken(req,res);
 
-    user.data = await User.getAllUser(`where email='${user.data.email}'`);
+    user.data = await User.getAllUser(`where email='${user.data.email}'`,0);
     user.data=user.data[0];
     return user;
 }
@@ -153,9 +153,9 @@ router.put('/upgrade',async (req, res) => {
 
     user.data.saldo-=price[tipe];
     user.data.tipe_user=parseInt(tipe)
-
+    let keterangan = "upgrade User ke tipe-"+parseInt(tipe);
     let updatedUser = await User.updateUser(`set saldo='${user.data.saldo}', tipe_user='${user.data.tipe_user}'`,`where email='${user.data.email}'`);
-    
+    await User.makeLog(user.data.kode,keterangan,price[tipe],"Upgrade");
 
 
     return res.status(200).send(user.data);
@@ -169,11 +169,11 @@ router.put("/recharge", async (req,res)=>{
     if( !auth.cekAllNumeric(api_hit)){
         return res.status(400).send({"Message": "Format api hit hanya boleh angka"});
     }
-    let total= parseInt(api_hit) * 20000;
-    if(user.data.saldo < total){
+    let total= parseInt(api_hit) * 10000;
+    if(parseInt(user.data.saldo) < total){
         return res.status(400).send("Saldo anda tidak cukup");
     }
-    user.data.saldo-=total;
+    let update_saldo = parseInt(user.data.saldo) - total;
     let temp= user.data.api_hit
     user.data.api_hit +=parseInt(api_hit);
 
@@ -183,7 +183,9 @@ router.put("/recharge", async (req,res)=>{
     }else if(user.data.tipe_user == 1){
         tipe = "Advance"
     }
-    let updatedUser = await User.updateUser(`set saldo='${user.data.saldo}', api_hit='${user.data.api_hit}'`,`where email='${user.data.email}'`);
+    let keterangan  = "recharge api Hit sebesar :"+ total
+    let updatedUser = await User.updateUser(`set saldo='${update_saldo}', api_hit='${user.data.api_hit}'`,`where email='${user.data.email}'`);
+    await User.makeLog(user.data.kode,keterangan,total,"Recharge");
 
     return res.status(200).send({
         "nama" : user.data.nama,
@@ -207,6 +209,10 @@ router.put('/topup',async (req, res) => {
     user.data.saldo=parseInt(user.data.saldo)+parseInt(saldo)
 
     let updatedUser = await User.updateUser(`set saldo='${user.data.saldo}'`,`where email='${user.data.email}'`);
+
+    let keterangan = "top up saldo sebesar :" + parseInt(saldo);
+    await User.makeLog(user.data.kode,keterangan,saldo,"TopUp");
+
 
     return res.status(200).send(user.data);
 });
