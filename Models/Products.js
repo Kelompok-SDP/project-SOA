@@ -327,6 +327,30 @@ const addDeskripsi = async(value)=>{
     let data = db.executeQuery(`insert into mh_deskripsi_produk ${value}`);
     return data
 }
+const getProdukNewDeskripsi = async(where ='')=>{
+    let data = db.executeQuery(`select mhdp.id,mhp.nama "Nama",mhp.indikasi "Deskripsi",mhdp.isi_deskripsi "New Deskripsi" from mh_produk mhp
+    join mh_deskripsi_produk mhdp on mhdp.id_produk=mhp.kode ${where}`);
+    return data
+}
+const UpdateProdukNewDeskripsi = async(id)=>{
+    let dataDeskripsi = await db.executeQuery(`select * from mh_deskripsi_produk where id='${id}'`);
+    console.log(dataDeskripsi)
+    let data={
+        "status":0
+    }
+    if(dataDeskripsi[0].status==0){
+        await db.executeQuery(`update mh_produk set indikasi = '${dataDeskripsi[0].isi_deskripsi}' where kode = '${dataDeskripsi[0].id_produk}' `);
+        data.data = await getProdukNewDeskripsi();
+        data.status=204;
+        await db.executeQuery(`update mh_deskripsi_produk set status = '1' where id = '${id}' `);
+    }else{
+        data.data={
+            "error":"Data deskripsi sudah perna digunakan",
+        }
+        data.status=400;
+    }
+    return data
+}
 
 
 const getKategoriProduk  = async(limits,nama,deskripsi)=>{
@@ -388,5 +412,7 @@ module.exports = {
     getProdukById,
     getProduk,
     addDeskripsi,
-    getKategoriProduk
+    getKategoriProduk,
+    getProdukNewDeskripsi,
+    UpdateProdukNewDeskripsi
 }

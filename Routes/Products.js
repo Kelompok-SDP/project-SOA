@@ -201,6 +201,21 @@ router.put('/', async (req, res) =>{
         });
     }
 });
+router.get('/produkDeskripsi', async (req, res) =>{
+    let verify = await vertifikasiAdmin(req, res);
+    if(!verify){
+        let selectPorduct = await Produk.getProdukNewDeskripsi();
+        return res.status(200).send(selectPorduct);
+    }
+});
+
+router.put('/produkDeskripsi/:id', async (req, res) =>{
+    let verify = await vertifikasiAdmin(req, res);
+    if(!verify){
+        let selectPorduct = await Produk.UpdateProdukNewDeskripsi(req.params.id);
+        return res.status(selectPorduct.status).send(selectPorduct.data);
+    }
+});
 
 router.delete('/', async (req, res) =>{
     let verify = await vertifikasiAdmin(req, res);
