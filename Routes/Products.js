@@ -214,7 +214,7 @@ router.put('/', uploadFile.uploadUpdPro.single("foto_produk"), async (req, res) 
         });
     }
 });
-router.get('/produkDeskripsi', async (req, res) =>{
+router.get('/deskripsi', async (req, res) =>{
     let verify = await vertifikasiAdmin(req, res);
     if(!verify){
         let selectPorduct = await Produk.getProdukNewDeskripsi();

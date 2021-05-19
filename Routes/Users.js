@@ -225,7 +225,7 @@ router.put('/gantiEmail',async (req, res) => {
 
     return res.status(200).send("Email berhasil di ganti tolong login kembali");
 });
-router.post('/addDeskripsi',async (req, res) => {
+router.post('/deskripsi',async (req, res) => {
     let user=await getUser(req,res)
 
     let {id_produk,isi_deskripsi}=req.body;
