@@ -38,7 +38,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
+									"pm.test(\"Berhasil Login\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
 									"});\r",
 									"\r",
@@ -46,14 +46,15 @@
 									"  const responseJson = pm.response.json();\r",
 									"    pm.expect(responseJson.email).to.eql(\"admin\");\r",
 									"    pm.response.to.have.status(200);\r",
-									"    console.log(responseJson);\r",
 									"});\r",
 									"\r",
 									"\r",
 									"pm.test(\"Person is Non-Admin\", () => {\r",
 									"  const responseJson = pm.response.json();\r",
 									"    pm.expect(responseJson).to.be.have.property(\"nama\");\r",
-									"});"
+									"});\r",
+									"\r",
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -62,8 +63,15 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.variables.get(\"email\");\r",
-									"console.log(pm.request.body.urlencoded.count() == 2);"
+									"pm.test('Email should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.urlencoded.has('email')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"pm.test('Password should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.urlencoded.has('password')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -90,7 +98,7 @@
 								},
 								{
 									"key": "password",
-									"value": "aa",
+									"value": "",
 									"description": "Password user",
 									"type": "text"
 								}
@@ -112,6 +120,20 @@
 				},
 				{
 					"name": "Lihat Profil User dengan JWT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Berhasil Lihat Profile\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -131,6 +153,27 @@
 				},
 				{
 					"name": "Ganti Email User dengan JWT",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.test('Email Lama should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.urlencoded.has('email_lama')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"pm.test('Email Baru should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.urlencoded.has('email_baru')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"pm.test('Api Key should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.urlencoded.has(\"api_key\")).to.equal(true);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -250,6 +293,70 @@
 			"item": [
 				{
 					"name": "Tambah Produk",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.test('Nama should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.formdata.has('nama')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"pm.test('Id Kategori should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.formdata.has('id_kategori')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"pm.test('Id Produsen should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.formdata.has('id_produsen')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"pm.test('Satuan should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.formdata.has('satuan')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"pm.test('Indikasi should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.formdata.has('indikasi')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"pm.test('Komposisi should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.formdata.has('komposisi')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"pm.test('Dosis should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.formdata.has('dosis')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"pm.test('Aturan pakai should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.formdata.has('aturan_pakai')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"pm.test('Kemasan should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.formdata.has('kemasan')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"pm.test('Harga should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.formdata.has('harga')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"pm.test('Butuh resep should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.formdata.has('butuh_resep')).to.equal(true);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Berhasil Tambah Produk Baru\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -344,6 +451,50 @@
 				},
 				{
 					"name": "Update Produk",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.test('Id Produk should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.formdata.has('id_produk')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"pm.test('Id Produsen should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.formdata.has('id_produsen')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"pm.test('Harga should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.formdata.has('harga')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"pm.test('Kemasan should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.formdata.has('kemasan')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"pm.test('Keterangan should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.formdata.has('keterangan')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"pm.test('Foto Produk should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.formdata.has('foto_produk')).to.equal(true);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Berhasil Ubah Data Produk\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "PUT",
 						"header": [
@@ -403,6 +554,30 @@
 				},
 				{
 					"name": "Delete Produk",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.test('Id Produk should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.formdata.has('id_produk')).to.equal(true);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Berhasil Hapus Data Produk\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "DELETE",
 						"header": [],
@@ -427,7 +602,7 @@
 							"query": [
 								{
 									"key": "",
-									"value": null,
+									"value": "",
 									"disabled": true
 								}
 							]
@@ -438,6 +613,19 @@
 				},
 				{
 					"name": "Lihat 1 User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Berhasil Lihat Data User\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [
@@ -463,6 +651,19 @@
 				},
 				{
 					"name": "Lihat Semua User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Berhasil Lihat Data Semua User\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -501,6 +702,19 @@
 				},
 				{
 					"name": "History Transaksi API",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Berhasil Lihat History Transaksi\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -535,6 +749,19 @@
 				},
 				{
 					"name": "Lihat Opsi Deskripsi Produk",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Berhasil Lihat Opsi Deskripsi Produk\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -584,6 +811,19 @@
 			"item": [
 				{
 					"name": "Lihat 1 Produsen",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Berhasil Lihat Data Produsen\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -617,6 +857,19 @@
 				},
 				{
 					"name": "Lihat 1 Produk",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.test(\"Berhasil Lihat Data Produk\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -642,6 +895,19 @@
 				},
 				{
 					"name": "Lihat Produk",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Berhasil Lihat Data  Semua Produk\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -650,7 +916,7 @@
 						"header": [
 							{
 								"key": "x-auth-token",
-								"value": "addfdfdsfdsf",
+								"value": "asdkasjASSS",
 								"type": "text"
 							}
 						],
@@ -689,6 +955,19 @@
 				},
 				{
 					"name": "Lihat Kategori",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Berhasil Lihat Kategori\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -723,6 +1002,19 @@
 				},
 				{
 					"name": "Lihat Produsen",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Berhasil Lihat Data Semua Produsen\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [
