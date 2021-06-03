@@ -11,7 +11,7 @@ const db = require('../Database');
 async function getUser(req,res){
     let user = auth.verifyToken(req,res);
 
-    user.data = await User.getAllUser(`where email='${user.data.email}'`,0);
+    user.data = await User.getAllUser(`where email='${user.data.email}' AND tipe_user != 4`,0);
     user.data=user.data[0];
     return user;
 }
@@ -139,7 +139,7 @@ router.put('/upgrade',async (req, res) => {
 
     let tipe=req.body.tipe;
 
-    if(tipe<3){
+    if(tipe>3){
         return res.status(400).send("Tipe salah input");
     }
 
@@ -221,7 +221,7 @@ router.put('/gantiEmail',async (req, res) => {
 
     let email=req.body.email;
 
-    let updatedUser = await User.updateUser(`set email='${user.data.email}'`,`where email='${user.data.email}'`);
+    let updatedUser = await User.updateUser(`set email='${email}'`,`where email='${user.data.email}'`);
 
     return res.status(200).send("Email berhasil di ganti tolong login kembali");
 });
@@ -270,6 +270,10 @@ router.delete('/',async (req, res) => {
 });
 
 router.get('/log', async (req, res) =>{
+    let data = await vertifikasiAdmin(req,res);
+    if(data?.status == 401){
+        return res.status(401).send({"Message": data.msg});
+    }
     let where = "";
     let limit = req.query.limit == null ? "" : `LIMIT ${req.query.limit}`;
     let users = [];

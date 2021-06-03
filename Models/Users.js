@@ -41,11 +41,20 @@ const userLogin = async (email, password) => {
     let query = `SELECT * FROM mh_pelanggan WHERE email = '${email}' AND password = '${password}'`;
     let user = await db.executeQuery(query);
 
-    
+    console.log(user);
     if(user.length == 0) {
         const Data = {
             status:404,
             msg: 'user tidak ditemukan'
+        }
+
+        return Data;
+    }
+    if(user[0].tipe_user == 4){
+        console.log("masuk");
+        const Data = {
+            status:404,
+            msg: 'user telah di-banned'
         }
 
         return Data;
@@ -201,8 +210,11 @@ const getUser = async (userId) => {
 
 const getUserFromAPiKey = async (apikey) =>{
     let user = null;
-    let query =  `select * from mh_pelanggan where api_key = '${apikey}'`;
+    let query =  `select * from mh_pelanggan where api_key = '${apikey}' AND tipe_user != 4`;
     user = await db.executeQuery(query);
+    if(user.length == 0){
+        return "User telah di-banned";
+    }
     return user[0];
 }
 

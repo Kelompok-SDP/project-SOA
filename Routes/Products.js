@@ -23,6 +23,11 @@ router.get("/produsen/:id", async (req,res)=>{
 
     let users = null;
     users = await User.getUserFromAPiKey(token);
+    if(users == "User telah di-banned"){
+        return res.status(401).send({
+            error: 'User telah di-banned'
+        })
+    }
     //cek apakah ada user atau tidak
     if(!users){
         return res.status(401).send({"Message": "Unauthorized"});
@@ -55,6 +60,11 @@ router.get("/produsen", async (req,res)=>{
 
     let users = null;
     users = await User.getUserFromAPiKey(token);
+    if(users == "User telah di-banned"){
+        return res.status(401).send({
+            error: 'User telah di-banned'
+        })
+    }
     //cek apakah ada user atau tidak
     if(!users){
         return res.status(401).send({"Message": "Unauthorized"});
@@ -119,8 +129,9 @@ router.get('/', async(req, res) =>{ //iso pake jwt iso apikey, walaupun admin mb
         return res.status(401).send({"Message": "Unauthorized"});
     }
     const token = req.header("x-auth-token");
-    if(token.length > 15){
+    if(token.length > 18){
         users = await auth.verifyToken(req,res);
+        console.log(users);
         if(users.data.email != 'admin'){
             return res.status(400).send({
                 error: 'Token invalid'
@@ -128,7 +139,13 @@ router.get('/', async(req, res) =>{ //iso pake jwt iso apikey, walaupun admin mb
         }
     }else{
         users = await User.getUserFromAPiKey(token);
+        if(users == "User telah di-banned"){
+            return res.status(401).send({
+                error: 'User telah di-banned'
+            })
+        }
         apihit = await User.decreaseApihit(users.api_key);
+        
     }
     if(apihit > 0){
         let nama = req.query.nama;
@@ -214,6 +231,7 @@ router.put('/', uploadFile.uploadUpdPro.single("foto_produk"), async (req, res) 
         });
     }
 });
+
 router.get('/deskripsi', async (req, res) =>{
     let verify = await vertifikasiAdmin(req, res);
     if(!verify){
@@ -226,7 +244,10 @@ router.put('/produkDeskripsi/:id', async (req, res) =>{
     let verify = await vertifikasiAdmin(req, res);
     if(!verify){
         let selectPorduct = await Produk.UpdateProdukNewDeskripsi(req.params.id);
-        return res.status(selectPorduct.status).send(selectPorduct.data);
+        console.log()
+        return res.status(selectPorduct.status).send(
+            selectPorduct.data
+        );
     }
 });
 
@@ -258,6 +279,11 @@ router.get("/kategori", async function (req,res){
 
     let users = null;
     users = await User.getUserFromAPiKey(token);
+    if(users == "User telah di-banned"){
+        return res.status(401).send({
+            error: 'User telah di-banned'
+        })
+    }
     //cek apakah ada user atau tidak
     if(!users){
         return res.status(401).send({"Message": "Unauthorized"});
@@ -305,14 +331,20 @@ router.get("/kategori", async function (req,res){
 
 
 router.get("/:id", async (req,res)=>{
-    let user=await getUser(req,res);
-    if(user.data.api_hit<1){
+    const token = req.header("x-auth-token");
+    let user = await User.getUserFromAPiKey(token);
+        if(user == "User telah di-banned"){
+            return res.status(401).send({
+                error: 'User telah di-banned'
+            })
+        }
+    if(user.api_hit<1){
         return res.status(400).send("Api hit user habis");
     }
 
     let getData = await Produk.getProdukById(req.params.id);
     
-    let updatedUser = await User.updateUser(`set api_hit=api_hit-1`,`where email='${user.data.email}'`);
+    let updatedUser = await User.updateUser(`set api_hit=api_hit-1`,`where email='${user.email}'`);
     
     return res.send(getData);
 })

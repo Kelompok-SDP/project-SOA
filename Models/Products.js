@@ -86,6 +86,7 @@ const searchProductWithLimit = async (nama, desk, limit, type, aihit) => {
         let matches = limit.match("[a-zA-Z]+");
             if(matches == null){
                 let select = `SELECT * FROM MH_PRODUK WHERE ` + whereName + conjuction + whereDesc + ` AND STATUS = 1 LIMIT ${limit}`;
+                console.log(select);
                 let hasil = await db.executeQuery(select);
                 if(hasil.length > 0){
                     hasil.forEach(element => {
@@ -346,12 +347,12 @@ const UpdateProdukNewDeskripsi = async(id)=>{
     }
     if(dataDeskripsi[0].status==0){
         await db.executeQuery(`update mh_produk set indikasi = '${dataDeskripsi[0].isi_deskripsi}' where kode = '${dataDeskripsi[0].id_produk}' `);
-        data.data = await getProdukNewDeskripsi();
-        data.status=204;
+        data.data = await getProdukNewDeskripsi(`where mhdp.id = '${id}'`);
+        data.status=200;
         await db.executeQuery(`update mh_deskripsi_produk set status = '1' where id = '${id}' `);
     }else{
         data.data={
-            "error":"Data deskripsi sudah perna digunakan",
+            "error":"Data deskripsi sudah pernah digunakan",
         }
         data.status=400;
     }
