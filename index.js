@@ -24,4 +24,11 @@ const Produk = require('./Routes/Products');
 app.use('/api/users',Users);
 app.use('/api/produk',Produk);
 
-app.listen(3000,() => console.log('listening on port 3000'));
+const port = process.env.PORT || 3000;
+//kalau heroku jalankan env.PORT, kalau localhost pake 3000
+
+app.listen(port, function () {
+    console.log(`listening on port ${port}`);
+})
+
+//app.listen(3000,() => console.log('listening on port 3000'));
