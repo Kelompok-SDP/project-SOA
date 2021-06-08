@@ -4,13 +4,11 @@ let pool = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-    port : process.env.DB_PORT,
+    database: process.env.DB_DATABASE
 });
 console.log("H: "+process.env.DB_HOST);
 console.log("U: "+process.env.DB_USERNAME);
 console.log("P: "+process.env.DB_PASSWORD);
-console.log("Port: "+process.env.DB_PORT);
 const executeQuery = async (query) => {
     return new Promise((resolve, reject) => {
         pool.query(query, (err, rows, fields) => {
