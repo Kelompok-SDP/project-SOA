@@ -92,6 +92,7 @@ const getAllUser = async (where = '',limit) => {
 
 const updateUser = async (set,where) => {
     let query = `update mh_pelanggan ${set} ${where}`;
+    console.log(query);
     let users = await db.executeQuery(query);
     return users;
 }
@@ -240,6 +241,7 @@ const makeLog = async (kodeuser,keterangan,total,jenis_transaksi) =>{
     var today = new Date();
     var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
     let query = `insert into log_transaksi values('','${date}','${kodeuser}','${jenis_transaksi}',${parseInt(total)},'${keterangan}')`
+    console.log(query);
     let data =  await db.executeQuery(query);
     return data;
 }
