@@ -85,7 +85,7 @@ const searchProductWithLimit = async (nama, desk, limit, type, aihit) => {
         const array = [];
         let matches = limit.match("[a-zA-Z]+");
             if(matches == null){
-                let select = `SELECT * FROM MH_PRODUK WHERE ` + whereName + conjuction + whereDesc + ` AND STATUS = 1 LIMIT ${limit}`;
+                let select = `SELECT * FROM mh_produk WHERE ` + whereName + conjuction + whereDesc + ` AND STATUS = 1 LIMIT ${limit}`;
                 console.log(select);
                 let hasil = await db.executeQuery(select);
                 if(hasil.length > 0){
