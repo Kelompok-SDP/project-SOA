@@ -154,7 +154,7 @@ router.put('/upgrade',async (req, res) => {
     user.data.saldo-=price[tipe];
     user.data.tipe_user=parseInt(tipe)
     let keterangan = "upgrade User ke tipe-"+parseInt(tipe);
-    let updatedUser = await User.updateUser(`set saldo='${user.data.saldo}', tipe_user='${user.data.tipe_user}'`,`where email='${user.data.email}'`);
+    let updatedUser = await User.updateUser(`set saldo=${user.data.saldo}, tipe_user=${user.data.tipe_user}`,`where email='${user.data.email}'`);
     await User.makeLog(user.data.kode,keterangan,price[tipe],"Upgrade");
     
 
