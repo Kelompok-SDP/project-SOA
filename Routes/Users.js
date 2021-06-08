@@ -139,7 +139,7 @@ router.put('/upgrade',async (req, res) => {
     console.log(user.data.saldo, user.data.tipe_user, user.data.email);
     let tipe=req.body.tipe;
 
-    if(tipe>3){
+    if(tipe > 3){
         return res.status(400).send("Tipe salah input");
     }
 
@@ -151,7 +151,7 @@ router.put('/upgrade',async (req, res) => {
         return res.status(400).send("Tipe anda lebih tinggi atau sama tinggi");
     }
     console.log("Sebelum "+user.data.saldo);
-    user.data.saldo = parseInt(user.data.saldo - price[tipe]);
+    user.data.saldo = parseInt(user.data.saldo - price[tipe-1]);
     console.log("Sesudah "+ user.data.saldo);
     user.data.tipe_user=parseInt(tipe);
     let keterangan = "upgrade User ke tipe-"+parseInt(tipe);
