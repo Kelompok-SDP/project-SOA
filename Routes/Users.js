@@ -135,7 +135,7 @@ router.get('/profil',async (req, res) => {
 
 router.put('/upgrade',async (req, res) => {
     let user=await getUser(req,res)
-    let price=[15000,25000];
+    let price=[0,15000,25000];
     console.log(user.data.saldo, user.data.tipe_user, user.data.email);
     let tipe=req.body.tipe;
 
