@@ -136,7 +136,7 @@ router.get('/profil',async (req, res) => {
 router.put('/upgrade',async (req, res) => {
     let user=await getUser(req,res)
     let price=[15000,25000];
-
+    console.log(user.data.saldo, user.data.tipe_user, user.data.email);
     let tipe=req.body.tipe;
 
     if(tipe>3){
@@ -156,7 +156,7 @@ router.put('/upgrade',async (req, res) => {
     let keterangan = "upgrade User ke tipe-"+parseInt(tipe);
     let updatedUser = await User.updateUser(`set saldo='${user.data.saldo}', tipe_user='${user.data.tipe_user}'`,`where email='${user.data.email}'`);
     await User.makeLog(user.data.kode,keterangan,price[tipe],"Upgrade");
-    console.log(user.data.saldo, user.data.tipe_user, user.data.email);
+    
 
     return res.status(200).send(user.data);
 });
