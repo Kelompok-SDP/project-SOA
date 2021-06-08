@@ -240,7 +240,7 @@ const decreaseApihit = async (apikey) =>{
 const makeLog = async (kodeuser,keterangan,total,jenis_transaksi) =>{
     var today = new Date();
     var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-    let query = `insert into log_transaksi values('','${date}','${kodeuser}','${jenis_transaksi}',${parseInt(total)},'${keterangan}')`
+    let query = `insert into log_transaksi values(0,'${date}','${kodeuser}','${jenis_transaksi}',${parseInt(total)},'${keterangan}')`
     console.log(query);
     let data =  await db.executeQuery(query);
     return data;
