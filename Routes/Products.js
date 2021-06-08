@@ -70,7 +70,7 @@ router.get("/produsen", async (req,res)=>{
         return res.status(401).send({"Message": "Unauthorized"});
     }
     //kalo bukan profession maka ditendang
-    if(users.tipe_user != 2){
+    if(users.tipe_user < 2){
         return res.status(401).send({"Message": "Unauthorized"});
     }
     //cek api hit apakah cukup atau tidak 
