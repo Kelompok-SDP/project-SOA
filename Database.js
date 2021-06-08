@@ -7,7 +7,10 @@ let pool = mysql.createPool({
     database: process.env.DB_DATABASE,
     port : process.env.DB_PORT,
 });
-
+console.log(process.env.DB_HOST);
+console.log(process.env.DB_USERNAME);
+console.log(process.env.DB_PASSWORD);
+console.log(process.env.DB_PORT);
 const executeQuery = async (query) => {
     return new Promise((resolve, reject) => {
         pool.query(query, (err, rows, fields) => {
