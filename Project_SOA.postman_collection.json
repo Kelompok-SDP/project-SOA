@@ -10,12 +10,54 @@
 			"item": [
 				{
 					"name": "Register API",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "urlencoded",
-							"urlencoded": []
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "nama",
+									"value": "Yongki",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "abc.tanu@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "000",
+									"type": "text"
+								},
+								{
+									"key": "telepon",
+									"value": "085785487944",
+									"type": "text"
+								},
+								{
+									"key": "jenis_kelamin",
+									"value": "L",
+									"type": "text"
+								},
+								{
+									"key": "foto_user",
+									"type": "file",
+									"src": "/C:/Users/User/Pictures/Screenshots/Screenshot (4).png"
+								}
+							]
 						},
 						"url": {
 							"raw": "{{base_url}}/users/register",
@@ -41,18 +83,27 @@
 									"pm.test(\"Berhasil Login\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
 									"});\r",
+									"const responseJson = pm.response.json();\r",
 									"\r",
-									"pm.test(\"Person is Admin\", () => {\r",
-									"  const responseJson = pm.response.json();\r",
-									"    pm.expect(responseJson.email).to.eql(\"admin\");\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
+									"if(responseJson.email == \"admin\"){\r",
+									"    pm.test(\"Person is Admin\", () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    console.log(responseJson);\r",
+									"        pm.expect(responseJson.email).to.eql(\"admin\");\r",
+									"        pm.response.to.have.status(200);\r",
+									"    });\r",
+									"\r",
+									"}else{\r",
+									"    pm.test(\"Person is Non-Admin\", () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"        pm.expect(responseJson).to.be.have.property(\"nama\");\r",
+									"    });\r",
+									"}\r",
 									"\r",
 									"\r",
-									"pm.test(\"Person is Non-Admin\", () => {\r",
-									"  const responseJson = pm.response.json();\r",
-									"    pm.expect(responseJson).to.be.have.property(\"nama\");\r",
-									"});\r",
+									"\r",
+									"\r",
+									"\r",
 									"\r",
 									""
 								],
@@ -70,7 +121,6 @@
 									"pm.test('Password should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
 									"    pm.expect(pm.request.body.urlencoded.has('password')).to.equal(true);\r",
 									"});\r",
-									"\r",
 									""
 								],
 								"type": "text/javascript"
@@ -92,13 +142,13 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "caket.haryanti@manullang.name",
+									"value": "yongki5.tanu@gmail.com",
 									"description": "Email user",
 									"type": "text"
 								},
 								{
 									"key": "password",
-									"value": "",
+									"value": "aa",
 									"description": "Password user",
 									"type": "text"
 								}
@@ -132,11 +182,52 @@
 								],
 								"type": "text/javascript"
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const tokenUrl = `${pm.environment.get(\"base_url\")}/users/login`;\r",
+									"\r",
+									"const getTokenRequest = {\r",
+									"  method: 'POST',\r",
+									"  url: tokenUrl,\r",
+									"  body: {\r",
+									"        mode: 'urlencoded',\r",
+									"        urlencoded: [\r",
+									"        {key: \"email\", value: `${pm.environment.get(\"email_user\")}`},\r",
+									"        {key: \"password\", value: `${pm.environment.get(\"password_user\")}`}\r",
+									"        ] \r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"\r",
+									"pm.sendRequest(getTokenRequest, (err, response) => {\r",
+									"  const jsonResponse = response.json();\r",
+									"  const newAccessToken = jsonResponse.token;\r",
+									"  pm.environment.set('x-auth-token', newAccessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{x-auth-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
 						"url": {
 							"raw": "{{base_url}}/users/profil",
 							"host": [
@@ -152,22 +243,32 @@
 					"response": []
 				},
 				{
-					"name": "Ganti Email User dengan JWT",
+					"name": "Topup Saldo User dengan JWT",
 					"event": [
 						{
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.test('Email Lama should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
-									"    pm.expect(pm.request.body.urlencoded.has('email_lama')).to.equal(true);\r",
-									"});\r",
+									"const tokenUrl = `${pm.environment.get(\"base_url\")}/users/login`;\r",
 									"\r",
-									"pm.test('Email Baru should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
-									"    pm.expect(pm.request.body.urlencoded.has('email_baru')).to.equal(true);\r",
-									"});\r",
+									"const getTokenRequest = {\r",
+									"  method: 'POST',\r",
+									"  url: tokenUrl,\r",
+									"  body: {\r",
+									"        mode: 'urlencoded',\r",
+									"        urlencoded: [\r",
+									"        {key: \"email\", value: `${pm.environment.get(\"email_user\")}`},\r",
+									"        {key: \"password\", value: `${pm.environment.get(\"password_user\")}`}\r",
+									"        ] \r",
+									"    }\r",
+									"};\r",
 									"\r",
-									"pm.test('Api Key should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
-									"    pm.expect(pm.request.body.urlencoded.has(\"api_key\")).to.equal(true);\r",
+									"\r",
+									"pm.sendRequest(getTokenRequest, (err, response) => {\r",
+									"  const jsonResponse = response.json();\r",
+									"  const newAccessToken = jsonResponse.token;\r",
+									"  console.log(newAccessToken);\r",
+									"  pm.environment.set('x-auth-token', newAccessToken);\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -176,46 +277,23 @@
 					],
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{x-auth-token}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"key": "email_lama",
-									"value": "",
-									"type": "text"
-								},
-								{
-									"key": "email_baru",
-									"value": "",
-									"type": "text"
-								},
-								{
-									"key": "api_key",
-									"value": "",
+									"key": "saldo",
+									"value": "100000",
 									"type": "text"
 								}
 							]
 						},
-						"url": {
-							"raw": "{{base_url}}/users/gantiEmail",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"users",
-								"gantiEmail"
-							]
-						},
-						"description": "Endpoint untuk mengganti email user"
-					},
-					"response": []
-				},
-				{
-					"name": "Topup Saldo User dengan JWT",
-					"request": {
-						"method": "PUT",
-						"header": [],
 						"url": {
 							"raw": "{{base_url}}/users/topup",
 							"host": [
@@ -232,9 +310,56 @@
 				},
 				{
 					"name": "Upgrade Status User dengan JWT",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const tokenUrl = `${pm.environment.get(\"base_url\")}/users/login`;\r",
+									"\r",
+									"const getTokenRequest = {\r",
+									"  method: 'POST',\r",
+									"  url: tokenUrl,\r",
+									"  body: {\r",
+									"        mode: 'urlencoded',\r",
+									"        urlencoded: [\r",
+									"        {key: \"email\", value: `${pm.environment.get(\"email_user\")}`},\r",
+									"        {key: \"password\", value: `${pm.environment.get(\"password_user\")}`}\r",
+									"        ] \r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"\r",
+									"pm.sendRequest(getTokenRequest, (err, response) => {\r",
+									"  const jsonResponse = response.json();\r",
+									"  const newAccessToken = jsonResponse.token;\r",
+									"  console.log(newAccessToken);\r",
+									"  pm.environment.set('x-auth-token', newAccessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{x-auth-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "tipe",
+									"value": "3",
+									"type": "text"
+								}
+							]
+						},
 						"url": {
 							"raw": "{{base_url}}/users/upgrade",
 							"host": [
@@ -251,15 +376,63 @@
 				},
 				{
 					"name": "Recharge API Hit User dengan JWT",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const tokenUrl = `${pm.environment.get(\"base_url\")}/users/login`;\r",
+									"\r",
+									"const getTokenRequest = {\r",
+									"  method: 'POST',\r",
+									"  url: tokenUrl,\r",
+									"  body: {\r",
+									"        mode: 'urlencoded',\r",
+									"        urlencoded: [\r",
+									"        {key: \"email\", value: `${pm.environment.get(\"email_user\")}`},\r",
+									"        {key: \"password\", value: `${pm.environment.get(\"password_user\")}`}\r",
+									"        ] \r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"\r",
+									"pm.sendRequest(getTokenRequest, (err, response) => {\r",
+									"  const jsonResponse = response.json();\r",
+									"  const newAccessToken = jsonResponse.token;\r",
+									"  console.log(newAccessToken);\r",
+									"  pm.environment.set('x-auth-token', newAccessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{x-auth-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "api_hit",
+									"value": "10",
+									"type": "text"
+								}
+							]
+						},
 						"url": {
-							"raw": "{{base_url}}/recharge",
+							"raw": "{{base_url}}/users/recharge",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
+								"users",
 								"recharge"
 							]
 						},
@@ -271,17 +444,109 @@
 					"name": "Komen Deskripsi Produk",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImtvZGUiOiJQRV9ZWTAwMSIsIm5hbWEiOiJZb25na2kiLCJlbWFpbCI6InlvbmdraTIudGFudUBnbWFpbC5jb20iLCJ0ZWxlcG9uIjoiMDg1Nzg1NDg3OTQzIiwiamVuaXNrZWxhbWluIjoiTCIsImFwaV9oaXQiOjExMCwiYXBpX2tleSI6InY0MjIxMTlIbzhSMTBvNjIxMCIsInNhbGRvIjoxNzUwMDAsInRpcGVfdXNlciI6MSwiZm90b191c2VyIjoiLi9QdWJsaWMvdXBsb2Fkcy9Qcm9maWxfUEVfWVkwMDEucG5nIn0sImlhdCI6MTYyMjcwMzIyMn0.Tbhcc4WRj0MxDVSl1Hk9QG_sGoqOyglGjFzt7hZT_ik",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id_produk",
+									"value": "PR_AC001",
+									"type": "text"
+								},
+								{
+									"key": "isi_deskripsi",
+									"value": "Bagus dan berkualitas",
+									"type": "text"
+								}
+							]
+						},
 						"url": {
-							"raw": "{{base_url}}/deskripsi",
+							"raw": "{{base_url}}/users/deskripsi",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
+								"users",
 								"deskripsi"
 							]
 						},
 						"description": "Endpoint untuk mengomentari deskripsi pada suatu produk tertentu"
+					},
+					"response": []
+				},
+				{
+					"name": "Ganti Email User dengan JWT",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.test('Email should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.urlencoded.has('email')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"const tokenUrl = `${pm.environment.get(\"base_url\")}/users/login`;\r",
+									"\r",
+									"const getTokenRequest = {\r",
+									"  method: 'POST',\r",
+									"  url: tokenUrl,\r",
+									"  body: {\r",
+									"        mode: 'urlencoded',\r",
+									"        urlencoded: [\r",
+									"        {key: \"email\", value: \"qkuswandari@gmail.co.id\"},\r",
+									"        {key: \"password\", value: \"007\"}\r",
+									"        ] \r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"\r",
+									"pm.sendRequest(getTokenRequest, (err, response) => {\r",
+									"  const jsonResponse = response.json();\r",
+									"  const newAccessToken = jsonResponse.token;\r",
+									"  console.log(newAccessToken);\r",
+									"  pm.environment.set('x-auth-token', newAccessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{x-auth-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "yongki10.tanu@gmail.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/users/gantiEmail",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"gantiEmail"
+							]
+						},
+						"description": "Endpoint untuk mengganti email user"
 					},
 					"response": []
 				}
@@ -340,6 +605,27 @@
 									"\r",
 									"pm.test('Butuh resep should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
 									"    pm.expect(pm.request.body.formdata.has('butuh_resep')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"const tokenUrl = `${pm.environment.get(\"base_url\")}/users/login`;\r",
+									"\r",
+									"const getTokenRequest = {\r",
+									"  method: 'POST',\r",
+									"  url: tokenUrl,\r",
+									"  body: {\r",
+									"        mode: 'urlencoded',\r",
+									"        urlencoded: [\r",
+									"        {key: \"email\", value: \"admin\"},\r",
+									"        {key: \"password\", value: \"admin\"}\r",
+									"        ] \r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"\r",
+									"pm.sendRequest(getTokenRequest, (err, response) => {\r",
+									"  const jsonResponse = response.json();\r",
+									"  const newAccessToken = jsonResponse.token;\r",
+									"  pm.environment.set('x-auth-token', newAccessToken);\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -362,7 +648,7 @@
 						"header": [
 							{
 								"key": "x-auth-token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoiYWRtaW4ifSwiaWF0IjoxNjIwMTk3MTg5fQ.seCmAB9-DoN6RYqD1nrYpP6_dZMAb57v1gCUUCrx6Wc",
+								"value": "{{x-auth-token}}",
 								"type": "text"
 							}
 						],
@@ -371,7 +657,7 @@
 							"formdata": [
 								{
 									"key": "nama",
-									"value": "Panadol",
+									"value": "Antasamin",
 									"type": "text"
 								},
 								{
@@ -391,7 +677,7 @@
 								},
 								{
 									"key": "indikasi",
-									"value": "Menyembuhkan sakit kepala",
+									"value": "Menyembuhkan flu",
 									"type": "text"
 								},
 								{
@@ -432,7 +718,7 @@
 								{
 									"key": "foto_produk",
 									"type": "file",
-									"src": []
+									"src": "/C:/Users/User/Pictures/Getsocio.png"
 								}
 							]
 						},
@@ -478,6 +764,27 @@
 									"\r",
 									"pm.test('Foto Produk should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
 									"    pm.expect(pm.request.body.formdata.has('foto_produk')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"const tokenUrl = `${pm.environment.get(\"base_url\")}/users/login`;\r",
+									"\r",
+									"const getTokenRequest = {\r",
+									"  method: 'POST',\r",
+									"  url: tokenUrl,\r",
+									"  body: {\r",
+									"        mode: 'urlencoded',\r",
+									"        urlencoded: [\r",
+									"        {key: \"email\", value: \"admin\"},\r",
+									"        {key: \"password\", value: \"admin\"}\r",
+									"        ] \r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"\r",
+									"pm.sendRequest(getTokenRequest, (err, response) => {\r",
+									"  const jsonResponse = response.json();\r",
+									"  const newAccessToken = jsonResponse.token;\r",
+									"  pm.environment.set('x-auth-token', newAccessToken);\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -500,7 +807,7 @@
 						"header": [
 							{
 								"key": "x-auth-token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoiYWRtaW4ifSwiaWF0IjoxNjIwMTk5NjEwfQ.crFAbWzkyyld02FlogVPGSRhGulTblYF9By9Aqibdkc",
+								"value": "{{x-auth-token}}",
 								"type": "text"
 							}
 						],
@@ -509,7 +816,7 @@
 							"formdata": [
 								{
 									"key": "id_produk",
-									"value": "PR_PP001",
+									"value": "PR_FF001",
 									"type": "text"
 								},
 								{
@@ -561,6 +868,27 @@
 								"exec": [
 									"pm.test('Id Produk should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
 									"    pm.expect(pm.request.body.formdata.has('id_produk')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"const tokenUrl = `${pm.environment.get(\"base_url\")}/users/login`;\r",
+									"\r",
+									"const getTokenRequest = {\r",
+									"  method: 'POST',\r",
+									"  url: tokenUrl,\r",
+									"  body: {\r",
+									"        mode: 'urlencoded',\r",
+									"        urlencoded: [\r",
+									"        {key: \"email\", value: \"admin\"},\r",
+									"        {key: \"password\", value: \"admin\"}\r",
+									"        ] \r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"\r",
+									"pm.sendRequest(getTokenRequest, (err, response) => {\r",
+									"  const jsonResponse = response.json();\r",
+									"  const newAccessToken = jsonResponse.token;\r",
+									"  pm.environment.set('x-auth-token', newAccessToken);\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -580,13 +908,19 @@
 					],
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{x-auth-token}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
 									"key": "id_produk",
-									"value": "PR_PP001",
+									"value": "PR_FF001",
 									"type": "text"
 								}
 							]
@@ -624,6 +958,34 @@
 								],
 								"type": "text/javascript"
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const tokenUrl = `${pm.environment.get(\"base_url\")}/users/login`;\r",
+									"\r",
+									"const getTokenRequest = {\r",
+									"  method: 'POST',\r",
+									"  url: tokenUrl,\r",
+									"  body: {\r",
+									"        mode: 'urlencoded',\r",
+									"        urlencoded: [\r",
+									"        {key: \"email\", value: \"admin\"},\r",
+									"        {key: \"password\", value: \"admin\"}\r",
+									"        ] \r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"\r",
+									"pm.sendRequest(getTokenRequest, (err, response) => {\r",
+									"  const jsonResponse = response.json();\r",
+									"  const newAccessToken = jsonResponse.token;\r",
+									"  pm.environment.set('x-auth-token', newAccessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
 					"request": {
@@ -631,7 +993,7 @@
 						"header": [
 							{
 								"key": "x-auth-token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoiYWRtaW4iLCJwYXNzd29yZCI6ImFkbWluIn0sImlhdCI6MTYxOTc1NDY4NH0.0fTkQpCbQxvtPJm418qO32lmUQVpmNQbnwQuut8BIXo",
+								"value": "{{x-auth-token}}",
 								"type": "text"
 							}
 						],
@@ -666,7 +1028,13 @@
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{x-auth-token}}",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/users/",
 							"host": [
@@ -683,9 +1051,38 @@
 				},
 				{
 					"name": "Ban User",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.test('Email should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.formdata.has('email')).to.equal(true);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{x-auth-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "abc.tanu@gmail.com",
+									"type": "text"
+								}
+							]
+						},
 						"url": {
 							"raw": "{{base_url}}/users/",
 							"host": [
@@ -713,11 +1110,45 @@
 								],
 								"type": "text/javascript"
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const tokenUrl = `${pm.environment.get(\"base_url\")}/users/login`;\r",
+									"\r",
+									"const getTokenRequest = {\r",
+									"  method: 'POST',\r",
+									"  url: tokenUrl,\r",
+									"  body: {\r",
+									"        mode: 'urlencoded',\r",
+									"        urlencoded: [\r",
+									"        {key: \"email\", value: \"admin\"},\r",
+									"        {key: \"password\", value: \"admin\"}\r",
+									"        ] \r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"\r",
+									"pm.sendRequest(getTokenRequest, (err, response) => {\r",
+									"  const jsonResponse = response.json();\r",
+									"  const newAccessToken = jsonResponse.token;\r",
+									"  pm.environment.set('x-auth-token', newAccessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{x-auth-token}}",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/users/log?nama&tanggal",
 							"host": [
@@ -760,17 +1191,52 @@
 								],
 								"type": "text/javascript"
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const tokenUrl = `${pm.environment.get(\"base_url\")}/users/login`;\r",
+									"\r",
+									"const getTokenRequest = {\r",
+									"  method: 'POST',\r",
+									"  url: tokenUrl,\r",
+									"  body: {\r",
+									"        mode: 'urlencoded',\r",
+									"        urlencoded: [\r",
+									"        {key: \"email\", value: \"admin\"},\r",
+									"        {key: \"password\", value: \"admin\"}\r",
+									"        ] \r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"\r",
+									"pm.sendRequest(getTokenRequest, (err, response) => {\r",
+									"  const jsonResponse = response.json();\r",
+									"  const newAccessToken = jsonResponse.token;\r",
+									"  pm.environment.set('x-auth-token', newAccessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{x-auth-token}}",
+								"type": "text"
+							}
+						],
 						"url": {
-							"raw": "{{base_url}}/deskripsi",
+							"raw": "{{base_url}}/produk/deskripsi",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
+								"produk",
 								"deskripsi"
 							]
 						},
@@ -780,23 +1246,69 @@
 				},
 				{
 					"name": "Ubah Deskripsi Produk",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const tokenUrl = `${pm.environment.get(\"base_url\")}/users/login`;\r",
+									"\r",
+									"const getTokenRequest = {\r",
+									"  method: 'POST',\r",
+									"  url: tokenUrl,\r",
+									"  body: {\r",
+									"        mode: 'urlencoded',\r",
+									"        urlencoded: [\r",
+									"        {key: \"email\", value: \"admin\"},\r",
+									"        {key: \"password\", value: \"admin\"}\r",
+									"        ] \r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"\r",
+									"pm.sendRequest(getTokenRequest, (err, response) => {\r",
+									"  const jsonResponse = response.json();\r",
+									"  const newAccessToken = jsonResponse.token;\r",
+									"  pm.environment.set('x-auth-token', newAccessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Berhasil Ubah Deskripsi Produk\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{x-auth-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
 						"url": {
-							"raw": "{{base_url}}/deskripsi/:id",
+							"raw": "{{base_url}}/produk/produkDeskripsi/2",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"deskripsi",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": ""
-								}
+								"produk",
+								"produkDeskripsi",
+								"2"
 							]
 						},
 						"description": "Untuk mengubah deskripsi dari obat"
@@ -822,6 +1334,44 @@
 								],
 								"type": "text/javascript"
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const tokenUrl = `${pm.environment.get(\"base_url\")}/users/login`;\r",
+									"\r",
+									"const getTokenRequest = {\r",
+									"  method: 'POST',\r",
+									"  url: tokenUrl,\r",
+									"  body: {\r",
+									"        mode: 'urlencoded',\r",
+									"        urlencoded: [\r",
+									"        {key: \"email\", value: `${pm.environment.get(\"email_user\")}`},\r",
+									"        {key: \"password\", value: `${pm.environment.get(\"password_user\")}`}\r",
+									"        ] \r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"\r",
+									"pm.sendRequest(getTokenRequest, (err, response) => {\r",
+									"  const jsonResponse = response.json();\r",
+									"  const newAccessToken = jsonResponse.token;\r",
+									"\r",
+									"  var a=newAccessToken;\r",
+									"    let decodedData=jwt_decode(a);\r",
+									"    console.log(decodedData.data.api_key);\r",
+									"  pm.environment.set('x-auth-token', decodedData.data.api_key);\r",
+									"});\r",
+									"\r",
+									"function jwt_decode(a) {\r",
+									"    var parts = a.split('.'); // header, payload, signature\r",
+									"    return JSON.parse(atob(parts[1]));\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
 					"protocolProfileBehavior": {
@@ -829,26 +1379,26 @@
 					},
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{x-auth-token}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "urlencoded",
 							"urlencoded": []
 						},
 						"url": {
-							"raw": "{{base_url}}/produk/produsen/:id",
+							"raw": "{{base_url}}/produk/produsen/PO_CV001",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"produk",
 								"produsen",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": ""
-								}
+								"PO_CV001"
 							]
 						},
 						"description": "Unutk melihat data dari 1 produsen berdasarkan id produsen"
@@ -862,6 +1412,43 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"const tokenUrl = `${pm.environment.get(\"base_url\")}/users/login`;\r",
+									"\r",
+									"const getTokenRequest = {\r",
+									"  method: 'POST',\r",
+									"  url: tokenUrl,\r",
+									"  body: {\r",
+									"        mode: 'urlencoded',\r",
+									"        urlencoded: [\r",
+									"        {key: \"email\", value: `${pm.environment.get(\"email_user\")}`},\r",
+									"        {key: \"password\", value: `${pm.environment.get(\"password_user\")}`}\r",
+									"        ] \r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"\r",
+									"pm.sendRequest(getTokenRequest, (err, response) => {\r",
+									"  const jsonResponse = response.json();\r",
+									"  const newAccessToken = jsonResponse.token;\r",
+									"\r",
+									"  var a=newAccessToken;\r",
+									"    let decodedData=jwt_decode(a);\r",
+									"    console.log(decodedData.data.api_key);\r",
+									"  pm.environment.set('x-auth-token', decodedData.data.api_key);\r",
+									"});\r",
+									"\r",
+									"function jwt_decode(a) {\r",
+									"    var parts = a.split('.'); // header, payload, signature\r",
+									"    return JSON.parse(atob(parts[1]));\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
 									"pm.test(\"Berhasil Lihat Data Produk\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
 									"});"
@@ -872,21 +1459,21 @@
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{x-auth-token}}",
+								"type": "text"
+							}
+						],
 						"url": {
-							"raw": "{{base_url}}/produk/:id",
+							"raw": "{{base_url}}/produk/PR_FF001",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"produk",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": ""
-								}
+								"PR_FF001"
 							]
 						},
 						"description": "Untuk melihat data 1 produk berdasarkan id produk"
@@ -906,6 +1493,43 @@
 								],
 								"type": "text/javascript"
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const tokenUrl = `${pm.environment.get(\"base_url\")}/users/login`;\r",
+									"\r",
+									"const getTokenRequest = {\r",
+									"  method: 'POST',\r",
+									"  url: tokenUrl,\r",
+									"  body: {\r",
+									"        mode: 'urlencoded',\r",
+									"        urlencoded: [\r",
+									"        {key: \"email\", value: `${pm.environment.get(\"email_user\")}`},\r",
+									"        {key: \"password\", value: `${pm.environment.get(\"password_user\")}`}\r",
+									"        ] \r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"\r",
+									"pm.sendRequest(getTokenRequest, (err, response) => {\r",
+									"  const jsonResponse = response.json();\r",
+									"  const newAccessToken = jsonResponse.token;\r",
+									"\r",
+									"  var a=newAccessToken;\r",
+									"    let decodedData=jwt_decode(a);\r",
+									"    console.log(decodedData.data.api_key);\r",
+									"  pm.environment.set('x-auth-token', decodedData.data.api_key);\r",
+									"});\r",
+									"\r",
+									"function jwt_decode(a) {\r",
+									"    var parts = a.split('.'); // header, payload, signature\r",
+									"    return JSON.parse(atob(parts[1]));\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
 					"protocolProfileBehavior": {
@@ -916,7 +1540,7 @@
 						"header": [
 							{
 								"key": "x-auth-token",
-								"value": "asdkasjASSS",
+								"value": "{{x-auth-token}}",
 								"type": "text"
 							}
 						],
@@ -925,7 +1549,7 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "{{base_url}}/produk?nama=pa&deskripsi=pusing&limit=5",
+							"raw": "{{base_url}}/produk?nama=ac&limit=2",
 							"host": [
 								"{{base_url}}"
 							],
@@ -935,17 +1559,12 @@
 							"query": [
 								{
 									"key": "nama",
-									"value": "pa",
+									"value": "ac",
 									"description": "Nama Produk"
 								},
 								{
-									"key": "deskripsi",
-									"value": "pusing"
-								},
-								{
 									"key": "limit",
-									"value": "5",
-									"description": "tidak bisa kalo free"
+									"value": "2"
 								}
 							]
 						},
@@ -966,11 +1585,54 @@
 								],
 								"type": "text/javascript"
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const tokenUrl = `${pm.environment.get(\"base_url\")}/users/login`;\r",
+									"\r",
+									"const getTokenRequest = {\r",
+									"  method: 'POST',\r",
+									"  url: tokenUrl,\r",
+									"  body: {\r",
+									"        mode: 'urlencoded',\r",
+									"        urlencoded: [\r",
+									"        {key: \"email\", value: `${pm.environment.get(\"email_user\")}`},\r",
+									"        {key: \"password\", value: `${pm.environment.get(\"password_user\")}`}\r",
+									"        ] \r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"\r",
+									"pm.sendRequest(getTokenRequest, (err, response) => {\r",
+									"  const jsonResponse = response.json();\r",
+									"  const newAccessToken = jsonResponse.token;\r",
+									"\r",
+									"  var a=newAccessToken;\r",
+									"    let decodedData=jwt_decode(a);\r",
+									"    console.log(decodedData.data.api_key);\r",
+									"  pm.environment.set('x-auth-token', decodedData.data.api_key);\r",
+									"});\r",
+									"\r",
+									"function jwt_decode(a) {\r",
+									"    var parts = a.split('.'); // header, payload, signature\r",
+									"    return JSON.parse(atob(parts[1]));\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{x-auth-token}}",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/produk/kategori?nama&deskripsi&limit",
 							"host": [
@@ -1013,6 +1675,43 @@
 								],
 								"type": "text/javascript"
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const tokenUrl = `${pm.environment.get(\"base_url\")}/users/login`;\r",
+									"\r",
+									"const getTokenRequest = {\r",
+									"  method: 'POST',\r",
+									"  url: tokenUrl,\r",
+									"  body: {\r",
+									"        mode: 'urlencoded',\r",
+									"        urlencoded: [\r",
+									"        {key: \"email\", value: `${pm.environment.get(\"email_user\")}`},\r",
+									"        {key: \"password\", value: `${pm.environment.get(\"password_user\")}`}\r",
+									"        ] \r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"\r",
+									"pm.sendRequest(getTokenRequest, (err, response) => {\r",
+									"  const jsonResponse = response.json();\r",
+									"  const newAccessToken = jsonResponse.token;\r",
+									"\r",
+									"  var a=newAccessToken;\r",
+									"    let decodedData=jwt_decode(a);\r",
+									"    console.log(decodedData.data.api_key);\r",
+									"  pm.environment.set('x-auth-token', decodedData.data.api_key);\r",
+									"});\r",
+									"\r",
+									"function jwt_decode(a) {\r",
+									"    var parts = a.split('.'); // header, payload, signature\r",
+									"    return JSON.parse(atob(parts[1]));\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
 					"request": {
@@ -1020,7 +1719,7 @@
 						"header": [
 							{
 								"key": "x-auth-token",
-								"value": "addfdfdsfdsf",
+								"value": "{{x-auth-token}}",
 								"type": "text"
 							}
 						],
