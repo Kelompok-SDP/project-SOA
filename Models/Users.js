@@ -165,7 +165,7 @@ const getLogAllUser = async (where,limit,users) => {
 
 //===== SHAN
 const getUser = async (userId) => {
-    let query = `SELECT * FROM MH_PELANGGAN WHERE KODE = '${userId}'`;
+    let query = `SELECT * FROM mh_pelanggan WHERE KODE = '${userId}'`;
     let hasil = await db.executeQuery(query);
 
     if(hasil.length > 0){
