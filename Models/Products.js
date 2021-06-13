@@ -131,20 +131,20 @@ const addProduct = async (nama,kat,produsen,satuan,indik,kompos,dosis,aturan,kem
 
 
     let newKodePr = signature + '_' +inital_nama.toString().toUpperCase();
-    let kode = await db.idMax('KODE','MH_PRODUK',`WHERE KODE LIKE '${newKodePr}%'`);
+    let kode = await db.idMax('KODE','mh_produk',`WHERE KODE LIKE '${newKodePr}%'`);
     newKodePr += kode;
 
-    let select = `SELECT * FROM MH_KATEGORI WHERE KODE = '${kat}'`;
+    let select = `SELECT * FROM mh_kategori WHERE KODE = '${kat}'`;
     let hasil = await db.executeQuery(select);
     if(hasil.length > 0){
         kat = hasil[0].kode;
         strkatl = hasil[0].nama; 
-        select = `SELECT * FROM MH_PRODUSEN WHERE KODE = '${produsen}'`;
+        select = `SELECT * FROM mh_produsen WHERE KODE = '${produsen}'`;
         hasil = await db.executeQuery(select);
         if(hasil.length > 0){
             produsen = hasil[0].kode;
             strprod = hasil[0].nama; 
-            select = `SELECT * FROM MH_SATUAN WHERE KODE = '${satuan}'`;
+            select = `SELECT * FROM mh_satuan WHERE KODE = '${satuan}'`;
             hasil = await db.executeQuery(select);
             if(hasil.length > 0){
                 satuan = hasil[0].kode;
@@ -174,7 +174,7 @@ const addProduct = async (nama,kat,produsen,satuan,indik,kompos,dosis,aturan,kem
     if(statinput == 0){
         var tgl = new Date();
         let tglinsert = tgl.getDate() +"/"+ "0"+(tgl.getMonth()+1) +"/"+ tgl.getFullYear();
-        let query = `INSERT INTO MH_PRODUK VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,"Admin",STR_TO_DATE('${tglinsert}', '%d/%m/%Y'),NULL,"")`;
+        let query = `INSERT INTO mh_produk VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,"Admin",STR_TO_DATE('${tglinsert}', '%d/%m/%Y'),NULL,"")`;
         await db.executeQueryWithParam(query,[newKodePr,kat,produsen,satuan,nama,indik,kompos,dosis,aturan,kemasan,harga,resep,keterangan,foto_produk]);
         const Data = {
             status: 201,
@@ -223,7 +223,7 @@ const addProduct = async (nama,kat,produsen,satuan,indik,kompos,dosis,aturan,kem
 
 const updProduct = async (id,produsen,harga,kemasan,keterangan,foto_produk) => {
     let tmpnama; let tmpkat; let tmpprodus; let tmphar; let tmpkemas;
-    let select = `SELECT * FROM MH_PRODUK WHERE KODE = '${id}'`;
+    let select = `SELECT * FROM mh_produk WHERE KODE = '${id}'`;
     let hasil = await db.executeQuery(select);
     if(hasil.length > 0){
         tmpnama = hasil[0].nama;
@@ -233,13 +233,13 @@ const updProduct = async (id,produsen,harga,kemasan,keterangan,foto_produk) => {
         tmphar = hasil[0].harga;
         const oldrupiah = convertToRp(tmphar);
 
-        select = `SELECT * FROM MH_PRODUSEN WHERE KODE = '${tmpprodus}'`;
+        select = `SELECT * FROM mh_produsen WHERE KODE = '${tmpprodus}'`;
         hasil = await db.executeQuery(select);
         let oldProdus = hasil[0].nama;
-        select = `SELECT * FROM MH_KATEGORI WHERE KODE = '${tmpkat}'`;
+        select = `SELECT * FROM mh_kategori WHERE KODE = '${tmpkat}'`;
         hasil = await db.executeQuery(select);
         tmpkat = hasil[0].nama;
-        select = `SELECT * FROM MH_PRODUSEN WHERE KODE = '${produsen}'`;
+        select = `SELECT * FROM mh_produsen WHERE KODE = '${produsen}'`;
         hasil = await db.executeQuery(select);
         if(hasil.length > 0){
             let newProdus = hasil[0].nama;
@@ -249,7 +249,7 @@ const updProduct = async (id,produsen,harga,kemasan,keterangan,foto_produk) => {
                 let strmsg = "";
                 var tgl = new Date();
                 let tglupdate = tgl.getDate() +"/"+ "0"+(tgl.getMonth()+1) +"/"+ tgl.getFullYear();
-                let update = `UPDATE MH_PRODUK SET FK_PRODUSEN = '${produsen}',KEMASAN = '${kemasan}', HARGA = '${harga}', 
+                let update = `UPDATE mh_produk SET FK_PRODUSEN = '${produsen}',KEMASAN = '${kemasan}', HARGA = '${harga}', 
                             KETERANGAN = '${keterangan}', DIUBAH_OLEH = 'Admin', DIUBAH_PADA = STR_TO_DATE('${tglupdate}', '%d/%m/%Y') WHERE KODE = '${id}'`;
                 await db.executeQuery(update);
                 if(foto_produk){
@@ -293,12 +293,12 @@ const updProduct = async (id,produsen,harga,kemasan,keterangan,foto_produk) => {
 }
 
 const delProduct = async (id) => {
-    let select = `SELECT * FROM MH_PRODUK WHERE KODE = '${id}'`;
+    let select = `SELECT * FROM mh_produk WHERE KODE = '${id}'`;
     let hasil = await db.executeQuery(select);
     let tmpnama;
     if(hasil.length > 0){
         tmpnama = hasil[0].nama;
-        let deletes = `UPDATE MH_PRODUK SET STATUS = 0 WHERE KODE = '${id}'`;
+        let deletes = `UPDATE mh_produk SET STATUS = 0 WHERE KODE = '${id}'`;
         await db.executeQuery(deletes);
         const Data = {
             status: 200,
