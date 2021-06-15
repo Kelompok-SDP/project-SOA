@@ -136,7 +136,7 @@ router.get('/profil',async (req, res) => {
 router.put('/upgrade',async (req, res) => {
     let user=await getUser(req,res)
     let price=[0,15000,25000];
-    console.log(user.data.saldo, user.data.tipe_user, user.data.email);
+    //console.log(user.data.saldo, user.data.tipe_user, user.data.email);
     let tipe=req.body.tipe;
 
     if(tipe > 3){
@@ -150,9 +150,7 @@ router.put('/upgrade',async (req, res) => {
     if(user.data.tipe_user >= parseInt(tipe)){
         return res.status(400).send("Tipe anda lebih tinggi atau sama tinggi");
     }
-    console.log("Sebelum "+user.data.saldo);
     user.data.saldo = parseInt(user.data.saldo - price[tipe-1]);
-    console.log("Sesudah "+ user.data.saldo);
     user.data.tipe_user=parseInt(tipe);
     let keterangan = "upgrade User ke tipe-"+parseInt(tipe);
     let updatedUser = await User.updateUser(`set saldo='${user.data.saldo}', tipe_user=${user.data.tipe_user}`,`where email='${user.data.email}'`);
@@ -227,7 +225,6 @@ router.put('/gantiEmail',async (req, res) => {
 });
 router.post('/deskripsi',async (req, res) => {
     let user=await getUser(req,res)
-    console.log(user);
     let {id_produk,isi_deskripsi}=req.body;
 
     let _Produk = await Produk.getProduk(`where kode = '${id_produk}'`)
@@ -240,7 +237,7 @@ router.post('/deskripsi',async (req, res) => {
         return res.status(400).send("isi deskripsi kosong");
     }
 
-    await Produk.addDeskripsi(`values(0,'${isi_deskripsi}','${user.kode}','${id_produk}','0')`);
+    await Produk.addDeskripsi(`values(0,'${isi_deskripsi}','${user.data.kode}','${id_produk}','0')`);
 
 
     return res.status(201).send("berhasil menambahkan deskripsi");
