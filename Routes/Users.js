@@ -227,7 +227,7 @@ router.put('/gantiEmail',async (req, res) => {
 });
 router.post('/deskripsi',async (req, res) => {
     let user=await getUser(req,res)
-
+    console.log(user.kode);
     let {id_produk,isi_deskripsi}=req.body;
 
     let _Produk = await Produk.getProduk(`where kode = '${id_produk}'`)
