@@ -1,11 +1,18 @@
 let mysql = require("mysql");
 require('dotenv').config();
 let pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
+    host: "185.232.14.1",
+    user: "4URa7hbGjT",
+    password: "PMwPzI0k9k",
+    database: "4URa7hbGjT"
 });
+
+// let pool = mysql.createPool({
+//     host: process.env.DB_HOST,
+//     user: process.env.DB_USERNAME,
+//     password: process.env.DB_PASSWORD,
+//     database: process.env.DB_NAME
+// });
 console.log("H: "+process.env.DB_HOST);
 console.log("U: "+process.env.DB_USERNAME);
 console.log("P: "+process.env.DB_PASSWORD);
