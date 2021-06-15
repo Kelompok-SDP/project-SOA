@@ -178,6 +178,14 @@
 									"pm.test(\"Berhasil Lihat Profile\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
 									"});\r",
+									"\r",
+									"const responseJson = pm.response.json();\r",
+									"\r",
+									"var count = Object.keys(responseJson).length;\r",
+									"\r",
+									"pm.test('Jumlah Response Benar', function () {\r",
+									"    pm.expect(count).to.equal(8);\r",
+									"});\r",
 									""
 								],
 								"type": "text/javascript"
@@ -273,6 +281,27 @@
 								],
 								"type": "text/javascript"
 							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Berhasil Top Up Saldo User\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    var count = Object.keys(responseJson).length;\r",
+									"\r",
+									"    pm.test('Jumlah Response Benar', function () {\r",
+									"        pm.expect(count).to.equal(10);\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
 					"request": {
@@ -315,6 +344,10 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"pm.test('Tipe should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.urlencoded.has('tipe')).to.equal(true);\r",
+									"});\r",
+									"\r",
 									"const tokenUrl = `${pm.environment.get(\"base_url\")}/users/login`;\r",
 									"\r",
 									"const getTokenRequest = {\r",
@@ -339,6 +372,27 @@
 								],
 								"type": "text/javascript"
 							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									" pm.test(\"Berhasil Upgrade Status User Profile\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    var count = Object.keys(responseJson).length;\r",
+									"\r",
+									"    pm.test('Jumlah Response Benar', function () {\r",
+									"        pm.expect(count).to.equal(10);\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
 					"request": {
@@ -355,7 +409,7 @@
 							"urlencoded": [
 								{
 									"key": "tipe",
-									"value": "3",
+									"value": "2",
 									"type": "text"
 								}
 							]
@@ -381,6 +435,11 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"pm.test('Api Hit should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.urlencoded.has('api_hit')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"\r",
 									"const tokenUrl = `${pm.environment.get(\"base_url\")}/users/login`;\r",
 									"\r",
 									"const getTokenRequest = {\r",
@@ -402,6 +461,27 @@
 									"  console.log(newAccessToken);\r",
 									"  pm.environment.set('x-auth-token', newAccessToken);\r",
 									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Berhasil Recharge API Hit Profile\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    var count = Object.keys(responseJson).length;\r",
+									"\r",
+									"    pm.test('Jumlah Response Benar', function () {\r",
+									"        pm.expect(count).to.equal(8);\r",
+									"    });\r",
+									"}"
 								],
 								"type": "text/javascript"
 							}
@@ -442,6 +522,55 @@
 				},
 				{
 					"name": "Komen Deskripsi Produk",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.test('Id Produk should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.urlencoded.has('id_produk')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"pm.test('Isi Deskripsi should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.urlencoded.has('isi_deskripsi')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"const tokenUrl = `${pm.environment.get(\"base_url\")}/users/login`;\r",
+									"\r",
+									"const getTokenRequest = {\r",
+									"  method: 'POST',\r",
+									"  url: tokenUrl,\r",
+									"  body: {\r",
+									"        mode: 'urlencoded',\r",
+									"        urlencoded: [\r",
+									"        {key: \"email\", value: `${pm.environment.get(\"email_user\")}`},\r",
+									"        {key: \"password\", value: `${pm.environment.get(\"password_user\")}`}\r",
+									"        ] \r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"pm.sendRequest(getTokenRequest, (err, response) => {\r",
+									"  const jsonResponse = response.json();\r",
+									"  const newAccessToken = jsonResponse.token;\r",
+									"  console.log(newAccessToken);\r",
+									"  pm.environment.set('x-auth-token', newAccessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Berhasil Tambah Deskripsi Produk\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -461,7 +590,7 @@
 								},
 								{
 									"key": "isi_deskripsi",
-									"value": "Bagus dan berkualitas",
+									"value": "Menarik dan berkualitas",
 									"type": "text"
 								}
 							]
@@ -499,7 +628,7 @@
 									"  body: {\r",
 									"        mode: 'urlencoded',\r",
 									"        urlencoded: [\r",
-									"        {key: \"email\", value: \"qkuswandari@gmail.co.id\"},\r",
+									"        {key: \"email\", value: \"yongki10.tanu@gmail.com\"},\r",
 									"        {key: \"password\", value: \"007\"}\r",
 									"        ] \r",
 									"    }\r",
@@ -511,6 +640,17 @@
 									"  const newAccessToken = jsonResponse.token;\r",
 									"  console.log(newAccessToken);\r",
 									"  pm.environment.set('x-auth-token', newAccessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Berhasil Ganti Email Baru User\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -531,7 +671,7 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "yongki10.tanu@gmail.com",
+									"value": "yongki7.tanu@gmail.com",
 									"type": "text"
 								}
 							]
@@ -657,7 +797,7 @@
 							"formdata": [
 								{
 									"key": "nama",
-									"value": "Antasamin",
+									"value": "Adem Sari",
 									"type": "text"
 								},
 								{
@@ -718,7 +858,7 @@
 								{
 									"key": "foto_produk",
 									"type": "file",
-									"src": "/C:/Users/User/Pictures/Getsocio.png"
+									"src": []
 								}
 							]
 						},
@@ -954,7 +1094,21 @@
 								"exec": [
 									"pm.test(\"Berhasil Lihat Data User\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
-									"});"
+									"});\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"const responseJson = pm.response.json();\r",
+									"    var count = Object.keys(responseJson.data).length;\r",
+									"    pm.test('Jumlah Response Benar', function () {\r",
+									"        pm.expect(count).to.equal(6);\r",
+									"    });\r",
+									"\r",
+									"var count2 = responseJson.Message;\r",
+									"\r",
+									"pm.test('Message Benar', function () {\r",
+									"    pm.expect(count2).to.equal(\"Berhasil ambil data user\");\r",
+									"});\r",
+									"}"
 								],
 								"type": "text/javascript"
 							}
@@ -1020,6 +1174,36 @@
 								"exec": [
 									"pm.test(\"Berhasil Lihat Data Semua User\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const tokenUrl = `${pm.environment.get(\"base_url\")}/users/login`;\r",
+									"\r",
+									"const getTokenRequest = {\r",
+									"  method: 'POST',\r",
+									"  url: tokenUrl,\r",
+									"  body: {\r",
+									"        mode: 'urlencoded',\r",
+									"        urlencoded: [\r",
+									"        {key: \"email\", value: \"admin\"},\r",
+									"        {key: \"password\", value: \"admin\"}\r",
+									"        ] \r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"\r",
+									"pm.sendRequest(getTokenRequest, (err, response) => {\r",
+									"  const jsonResponse = response.json();\r",
+									"  const newAccessToken = jsonResponse.token;\r",
+									"  pm.environment.set('x-auth-token', newAccessToken);\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -1058,6 +1242,38 @@
 								"exec": [
 									"pm.test('Email should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
 									"    pm.expect(pm.request.body.formdata.has('email')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"const tokenUrl = `${pm.environment.get(\"base_url\")}/users/login`;\r",
+									"\r",
+									"const getTokenRequest = {\r",
+									"  method: 'POST',\r",
+									"  url: tokenUrl,\r",
+									"  body: {\r",
+									"        mode: 'urlencoded',\r",
+									"        urlencoded: [\r",
+									"        {key: \"email\", value: \"admin\"},\r",
+									"        {key: \"password\", value: \"admin\"}\r",
+									"        ] \r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"\r",
+									"pm.sendRequest(getTokenRequest, (err, response) => {\r",
+									"  const jsonResponse = response.json();\r",
+									"  const newAccessToken = jsonResponse.token;\r",
+									"  pm.environment.set('x-auth-token', newAccessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Berhasil Banned User\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -1301,14 +1517,14 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "{{base_url}}/produk/produkDeskripsi/2",
+							"raw": "{{base_url}}/produk/produkDeskripsi/1",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"produk",
 								"produkDeskripsi",
-								"2"
+								"1"
 							]
 						},
 						"description": "Untuk mengubah deskripsi dari obat"
@@ -1330,7 +1546,19 @@
 								"exec": [
 									"pm.test(\"Berhasil Lihat Data Produsen\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
-									"});"
+									"});\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"const responseJson = pm.response.json();\r",
+									"\r",
+									"var count = Object.keys(responseJson[0]).length;\r",
+									"\r",
+									"    pm.test('Jumlah Response Benar', function () {\r",
+									"        pm.expect(count).to.equal(13);\r",
+									"    });\r",
+									"}\r",
+									"    \r",
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -1451,7 +1679,18 @@
 								"exec": [
 									"pm.test(\"Berhasil Lihat Data Produk\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
-									"});"
+									"});\r",
+									"\r",
+									"if(pm.response.code == 200){\r",
+									"const responseJson = pm.response.json();\r",
+									"\r",
+									"var count = Object.keys(responseJson[0]).length;\r",
+									"\r",
+									"    pm.test('Jumlah Response Benar', function () {\r",
+									"        pm.expect(count).to.equal(10);\r",
+									"    });\r",
+									"}\r",
+									"    "
 								],
 								"type": "text/javascript"
 							}
