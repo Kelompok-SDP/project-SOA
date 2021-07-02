@@ -56,38 +56,38 @@ router.post('/register', async (req, res) => {
     let foto_user = "./public/uploads/"+nama_file;
     console.log(req.body);  
 
-    upload(req, res, function (err) {
-        if (err) {
-          console.log(err);
-          return res.end("Something went wrong");
-        } else {
-          nama_file = req.file.filename;
-          console.log(req.file.path);
-          const drive = google.drive({ version: "v3",auth:oAuth2Client  });
-          const fileMetadata = {
-            name: req.file.filename,
-          };
-          const media = {
-            mimeType: req.file.mimetype,
-            body: fs.createReadStream(req.file.path),
-          };
-          drive.files.create(
-            {
-              resource: fileMetadata,
-              media: media,
-              fields: "id",
-            },
-            (err, file) => {
-              if (err) {
-                // Handle error
-                console.error(err);
-              } else {
-                fs.unlinkSync(req.file.path)
-              }
-            }
-          );
-        }
-      });
+    // upload(req, res, function (err) {
+    //     if (err) {
+    //       console.log(err);
+    //       return res.end("Something went wrong");
+    //     } else {
+    //       nama_file = req.file.filename;
+    //       console.log(req.file.path);
+    //       const drive = google.drive({ version: "v3",auth:oAuth2Client  });
+    //       const fileMetadata = {
+    //         name: req.file.filename,
+    //       };
+    //       const media = {
+    //         mimeType: req.file.mimetype,
+    //         body: fs.createReadStream(req.file.path),
+    //       };
+    //       drive.files.create(
+    //         {
+    //           resource: fileMetadata,
+    //           media: media,
+    //           fields: "id",
+    //         },
+    //         (err, file) => {
+    //           if (err) {
+    //             // Handle error
+    //             console.error(err);
+    //           } else {
+    //             fs.unlinkSync(req.file.path)
+    //           }
+    //         }
+    //       );
+    //     }
+    //   });
 
     nama = nama.toString().charAt(0).toUpperCase()+nama.toString().slice(1);
     let tipe_user = 0;
