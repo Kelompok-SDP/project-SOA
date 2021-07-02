@@ -17,7 +17,7 @@ async function getUser(req,res){
 
 const fs = require("fs");
 const multer = require("multer");
-const OAuth2Data = require("./credentials.json");
+const OAuth2Data = require("../credentials.json");
 var name,pic
 
 const { google } = require("googleapis");
