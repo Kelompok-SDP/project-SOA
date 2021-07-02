@@ -87,7 +87,7 @@ router.post('/register',async (req, res) => {
 
     let {nama, email,password,telepon,jenis_kelamin} = req.body;
     let foto_user = "./public/uploads/"+nama_file;
-
+    console.log(req.body);  
     nama = nama.toString().charAt(0).toUpperCase()+nama.toString().slice(1);
     let tipe_user = 0;
     let validEmail = await emailValidator.validatorEmail(req,res,email);
