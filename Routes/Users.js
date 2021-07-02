@@ -51,11 +51,13 @@ var upload = multer({
 }).single("foto_user"); //Field name and max count
 
 router.post('/register',async (req, res) => {
+    let nama_file = null;
     upload(req, res, function (err) {
         if (err) {
           console.log(err);
           return res.end("Something went wrong");
         } else {
+          nama_file = req.file.filename;
           console.log(req.file.path);
           const drive = google.drive({ version: "v3",auth:oAuth2Client  });
           const fileMetadata = {
@@ -84,7 +86,7 @@ router.post('/register',async (req, res) => {
       });
 
     let {nama, email,password,telepon,jenis_kelamin} = req.body;
-    let foto_user = "./public/uploads/"+req.file.filename;
+    let foto_user = "./public/uploads/"+nama_file;
 
     nama = nama.toString().charAt(0).toUpperCase()+nama.toString().slice(1);
     let tipe_user = 0;
