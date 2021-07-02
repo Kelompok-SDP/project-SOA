@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const uploadFile = require("../upload");
 const User = require("../Models/Users");
 const Produk = require("../Models/Products");
 const auth = require('../autentikasi');
