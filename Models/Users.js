@@ -40,8 +40,7 @@ const makeUser = async (nama,email,password,telepon,sex,tipe_user,foto_user) =>{
 const userLogin = async (email, password) => {
     let query = `SELECT * FROM mh_pelanggan WHERE email = '${email}' AND password = '${password}'`;
     let user = await db.executeQuery(query);
-
-    console.log(user);
+    
     if(user.length == 0) {
         const Data = {
             status:404,

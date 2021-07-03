@@ -293,7 +293,7 @@ const updProduct = async (id,produsen,harga,kemasan,keterangan,foto_produk) => {
 }
 
 const delProduct = async (id) => {
-    let select = `SELECT * FROM mh_produk WHERE KODE = '${id}'`;
+    let select = `SELECT * FROM mh_produk WHERE KODE = '${id}' AND STATUS = 1`;
     let hasil = await db.executeQuery(select);
     let tmpnama;
     if(hasil.length > 0){

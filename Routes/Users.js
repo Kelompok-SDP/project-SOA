@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../Models/Users");
+const Upload = require("../uploadFile");
 const Produk = require("../Models/Products");
 const auth = require('../autentikasi');
 const emailValidator = require("../emailValidator");
@@ -9,64 +10,96 @@ const db = require('../Database');
 
 async function getUser(req,res){
     let user = auth.verifyToken(req,res);
-
     user.data = await User.getAllUser(`where email='${user.data.email}' AND tipe_user != 4`,0);
+    console.log("Get User : "+user.data);
     user.data=user.data[0];
     return user;
 }
 
-const fs = require("fs");
-const multer = require("multer");
-const OAuth2Data = require("../credentials.json");
-var name,pic
+// const fs = require("fs");
+// const multer = require("multer");
+// const OAuth2Data = require("../credentials.json");
+// var name,pic
 
-const { google } = require("googleapis");
+// const { google } = require("googleapis");
 
-const CLIENT_ID = OAuth2Data.client_id;
-const CLIENT_SECRET = OAuth2Data.client_secret;
-const REDIRECT_URL = OAuth2Data.redirect_uris[0];
+// const CLIENT_ID = OAuth2Data.web.client_id;
+// const CLIENT_SECRET = OAuth2Data.web.client_secret;
+// const REDIRECT_URL = OAuth2Data.web.redirect_uris[0];
 
-const oAuth2Client = new google.auth.OAuth2(
-  CLIENT_ID,
-  CLIENT_SECRET,
-  REDIRECT_URL
-);
-var authed = false;
+// const oAuth2Client = new google.auth.OAuth2(
+//   CLIENT_ID,
+//   CLIENT_SECRET,
+//   REDIRECT_URL
+// );
+// var authed = false;
 
-// If modifying these scopes, delete token.json.
-const SCOPES =
-  "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.profile";
+// // If modifying these scopes, delete token.json.
+// const SCOPES =
+//   "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.profile";
 
-var Storage = multer.diskStorage({
-  destination: function (req, file, callback) {
-    callback(null, "./public/uploads");
-  },
-  filename: function (req, file, callback) {
-    callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
-  },
-});
+// var Storage = multer.diskStorage({
+//   destination: function (req, file, callback) {
+//     callback(null, "./Public/Uploads");
+//   },
+//   filename: function (req, file, callback) {
+//     callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
+//   },
+// });
 
-var upload = multer({
-  storage: Storage,
-}).single("foto_user"); //Field name and max count
+// var uploadss = multer({
+//   storage: Storage,
+// }).single("foto_user"); //Field name and max count
 
-router.post('/register', async (req, res) => {
-    let nama_file = null;
+// var upload = multer({
+//     storage: Storage,
+// }) //Field name and max count
+
+// function get() {
+//     if (!authed) {
+//         // Generate an OAuth URL and redirect there
+//         var url = oAuth2Client.generateAuthUrl({
+//           access_type: "offline",
+//           scope: SCOPES,
+//         });
+//         console.log(url);
+//       } else {
+//         var oauth2 = google.oauth2({
+//           auth: oAuth2Client,
+//           version: "v2",
+//         });
+//         oauth2.userinfo.get(function (err, response) {
+//           if (err) {
+//             console.log(err);
+//           } else {
+//             console.log(response.data);
+//             name = response.data.name
+//             pic = response.data.picture
+//           }
+//         });
+//       }
+// }
+
+
+router.post('/register', Upload.upload.single("foto_user"), async (req, res) => {
+    //let nama_file = null;
     let {nama, email,password,telepon,jenis_kelamin} = req.body;
-    let foto_user = "./public/uploads/"+nama_file;
-    console.log(req.body);  
-
-    // upload(req, res, function (err) {
+    console.log(nama);  
+    let foto_user = "./public/uploads/"+req.filename;
+    //get();
+    // uploadss(req, res, function (err) {
     //     if (err) {
     //       console.log(err);
     //       return res.end("Something went wrong");
     //     } else {
     //       nama_file = req.file.filename;
-    //       console.log(req.file.path);
+    //       console.log("asas: "+req.file.path);
     //       const drive = google.drive({ version: "v3",auth:oAuth2Client  });
     //       const fileMetadata = {
     //         name: req.file.filename,
+    //         parents:['https://drive.google.com/drive/u/3/folders/1gNCbR98LDc6Mitxk4fB4Hz5mFBuCWfs0']
     //       };
+    //       console.log(oAuth2Client);
     //       const media = {
     //         mimeType: req.file.mimetype,
     //         body: fs.createReadStream(req.file.path),
@@ -119,7 +152,7 @@ router.post('/register', async (req, res) => {
 
     let newUser = await User.makeUser(nama,email,password,telepon,jenis_kelamin,tipe_user,foto_user);
 
-    if(newUser?.data){
+    if(newUser.data){
         return res.status(newUser.status).send({
             Message: newUser.msg,
             data: newUser.data     
@@ -135,7 +168,6 @@ router.post('/register', async (req, res) => {
 
 router.post('/login',async (req, res) => {
     let {email, password} = req.body;
-
     if(email == 'admin' && password == 'admin'){
         const user = {
             email,password
@@ -146,7 +178,7 @@ router.post('/login',async (req, res) => {
             token
         })
     }
-
+    console.log(req.body.email);
     let user = await User.userLogin(email,password);
     if(user.status == 404){
         return res.status(user.status).send({
@@ -161,14 +193,14 @@ router.post('/login',async (req, res) => {
 const vertifikasiAdmin = async (req, res) => {
     let user = await auth.verifyToken(req,res);
     //token kosong
-    if(!user?.data?.email){
+    if(!user.data.email){
         return {
             status:401,
             msg: 'Unauthorized'
         };
     }
     //cek kalau user biasa
-    if(user?.data?.email != 'admin'){
+    if(user.data.email != 'admin'){
         return {
             status:401,
             msg: 'Unauthorized hanya boleh admin'
@@ -178,7 +210,7 @@ const vertifikasiAdmin = async (req, res) => {
 
 router.get('/',async (req, res) => {
     let data = await vertifikasiAdmin(req,res);
-    if(data?.status == 401){
+    if(data.status == 401){
         return res.status(401).send({"Message": data.msg});
     }
 
@@ -270,7 +302,7 @@ router.put("/recharge", async (req,res)=>{
 
 router.put('/topup',async (req, res) => {
     let user=await getUser(req,res)
-
+    console.log(user.data);
     let saldo=req.body.saldo;
 
     user.data.saldo=parseInt(user.data.saldo)+parseInt(saldo)
@@ -278,14 +310,13 @@ router.put('/topup',async (req, res) => {
     let updatedUser = await User.updateUser(`set saldo='${user.data.saldo}'`,`where email='${user.data.email}'`);
 
     let keterangan = "top up saldo sebesar :" + parseInt(saldo);
-    await User.makeLog(user.data.kode,keterangan,saldo,"TopUp");
+    await User.makeLog(user.kode,keterangan,saldo,"TopUp");
 
 
     return res.status(200).send(user.data);
 });
 router.put('/gantiEmail',async (req, res) => {
     let user=await getUser(req,res)
-
     let email=req.body.email;
 
     let updatedUser = await User.updateUser(`set email='${email}'`,`where email='${user.data.email}'`);
@@ -305,7 +336,6 @@ router.post('/deskripsi',async (req, res) => {
     if(!isi_deskripsi||isi_deskripsi==""){
         return res.status(400).send("isi deskripsi kosong");
     }
-
     await Produk.addDeskripsi(`values(0,'${isi_deskripsi}','${user.data.kode}','${id_produk}','0')`);
 
 
@@ -315,7 +345,7 @@ router.post('/deskripsi',async (req, res) => {
 
 router.delete('/',async (req, res) => {
     let data = await vertifikasiAdmin(req,res);
-    if(data?.status == 401){
+    if(data.status == 401){
         return res.status(401).send({"Message": data.msg});
     }
     let email = req.body.email;
@@ -337,7 +367,7 @@ router.delete('/',async (req, res) => {
 
 router.get('/log', async (req, res) =>{
     let data = await vertifikasiAdmin(req,res);
-    if(data?.status == 401){
+    if(data.status == 401){
         return res.status(401).send({"Message": data.msg});
     }
     let where = "";
@@ -368,7 +398,7 @@ router.get('/:id_user', async (req, res) =>{
     if(!verify){
         let userId = req.params.id_user;
         let searchUser = await User.getUser(userId);
-        if(searchUser?.data){
+        if(searchUser.data){
             return res.status(searchUser.status).send({
                 Message: searchUser.msg,
                 data: searchUser.data     

@@ -109,13 +109,13 @@ router.get("/produsen", async (req,res)=>{
 const vertifikasiAdmin = async (req, res) => {
     let user = await auth.verifyToken(req,res);
     //token kosong
-    if(!user?.data?.email){
+    if(!user.data.email){
         return res.status(401).send({
             error: 'Unauthorized'
         })
     }
 
-    if(user?.data?.email != 'admin'){
+    if(user.data.email != 'admin'){
         return res.status(401).send({
             error: 'Unauthorized hanya boleh admin'
         })
@@ -153,7 +153,7 @@ router.get('/', async(req, res) =>{ //iso pake jwt iso apikey, walaupun admin mb
         let limit = req.query.limit;
         let type = users.tipe_user;
         let searchProd = await Produk.searchProductWithLimit(nama, desk, limit, type, apihit);
-        if(searchProd?.data){
+        if(searchProd.data){
             return res.status(searchProd.status).send({
                 Message: searchProd.msg,
                 data: searchProd.data     
@@ -183,9 +183,9 @@ router.post('/', uploadFile.uploadAddPro.single("foto_produk"), async (req, res)
             let harga = req.body.harga;
             let resep = req.body.butuh_resep;
             let keterangan = req.body.keterangan;
-            let foto_produk = "./Public/uploads/"+req.file.filename;
+            let foto_produk = "./Public/Uploads/"+req.file.filename;
             let insertProd = await Produk.addProduct(nama,kat,produsen,satuan,indik,kompos,dosis,aturan,kemasan,harga,resep,keterangan,foto_produk);
-            if(insertProd?.data){
+            if(insertProd.data){
                 return res.status(insertProd.status).send({
                     Message: insertProd.msg,
                     data: insertProd.data     
@@ -219,7 +219,7 @@ router.put('/', uploadFile.uploadUpdPro.single("foto_produk"), async (req, res) 
         }else{
             updateProd = await Produk.updProduct(id,produsen,harga,kemasan,keterangan,foto_produk);
         }
-        if(updateProd?.data){
+        if(updateProd.data){
             return res.status(updateProd.status).send({
                 Message: updateProd.msg,
                 data: updateProd.data     
@@ -257,7 +257,7 @@ router.delete('/', async (req, res) =>{
         let id = req.body.id_produk;
 
         let deleteProd = await Produk.delProduct(id);
-        if(deleteProd?.data){
+        if(deleteProd.data){
             return res.status(deleteProd.status).send({
                 Message: deleteProd.msg,
                 data: deleteProd.data     
