@@ -210,6 +210,8 @@ const vertifikasiAdmin = async (req, res) => {
             status:401,
             msg: 'Unauthorized hanya boleh admin'
         };
+    }else{
+        return user;
     }
 }
 
