@@ -82,10 +82,15 @@ async function getUser(req,res){
 
 
 router.post('/register', Upload.upload.single("foto_user"), async (req, res) => {
+    if(!req.file){
+        return res.status(400).send({
+            "msg": "Tidak ada foto"
+        })
+    }
     //let nama_file = null;
     let {nama, email,password,telepon,jenis_kelamin} = req.body;
     console.log(nama);  
-    let foto_user = "./public/uploads/"+req.filename;
+    let foto_user = "./public/uploads/"+req.file.filename;
     //get();
     // uploadss(req, res, function (err) {
     //     if (err) {

@@ -174,7 +174,7 @@ const addProduct = async (nama,kat,produsen,satuan,indik,kompos,dosis,aturan,kem
     if(statinput == 0){
         var tgl = new Date();
         let tglinsert = tgl.getDate() +"/"+ "0"+(tgl.getMonth()+1) +"/"+ tgl.getFullYear();
-        let query = `INSERT INTO mh_produk VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,"Admin",STR_TO_DATE('${tglinsert}', '%d/%m/%Y'),NULL,"")`;
+        let query = `INSERT INTO mh_produk VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,"Admin",STR_TO_DATE('${tglinsert}', '%d/%m/%Y'),NULL,NULL)`;
         await db.executeQueryWithParam(query,[newKodePr,kat,produsen,satuan,nama,indik,kompos,dosis,aturan,kemasan,harga,resep,keterangan,foto_produk]);
         const Data = {
             status: 201,
