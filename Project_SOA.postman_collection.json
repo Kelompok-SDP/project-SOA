@@ -15,7 +15,37 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"pm.test('Nama should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.formdata.has('nama')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"pm.test('Email should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.formdata.has('email')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"pm.test('Password should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.formdata.has('password')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"pm.test('Telepon should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.formdata.has('telepon')).to.equal(true);\r",
+									"});\r",
+									"\r",
+									"pm.test('Jenis Kelamin should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
+									"    pm.expect(pm.request.body.formdata.has('jenis_kelamin')).to.equal(true);\r",
+									"});\r",
 									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Berhasil Membuat User Baru\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -29,33 +59,39 @@
 							"formdata": [
 								{
 									"key": "nama",
-									"value": "Yongki",
+									"value": "Yongki Tanu",
+									"description": "Nama pengguna API ini",
 									"type": "text"
 								},
 								{
 									"key": "email",
-									"value": "abc.tanu@gmail.com",
+									"value": "yongki.tanu5@gmail.com",
+									"description": "Email pengguna API ini",
 									"type": "text"
 								},
 								{
 									"key": "password",
-									"value": "000",
+									"value": "yongki5",
+									"description": "Password pengguna API ini",
 									"type": "text"
 								},
 								{
 									"key": "telepon",
-									"value": "085785487944",
+									"value": "085785440126",
+									"description": "Nomor telepon pengguna API ini",
 									"type": "text"
 								},
 								{
 									"key": "jenis_kelamin",
 									"value": "L",
+									"description": "Jenis kelamin pengguna API ini",
 									"type": "text"
 								},
 								{
 									"key": "foto_user",
+									"description": "Foto pengguna API ini",
 									"type": "file",
-									"src": "/C:/Users/User/Pictures/Screenshots/Screenshot (4).png"
+									"src": "Screenshot (3).png"
 								}
 							]
 						},
@@ -142,14 +178,14 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "yongki5.tanu@gmail.com",
-									"description": "Email user",
+									"value": "yongki.tanu5@gmail.com",
+									"description": "Email pengguna API ini",
 									"type": "text"
 								},
 								{
 									"key": "password",
-									"value": "aa",
-									"description": "Password user",
+									"value": "yongki5",
+									"description": "Password pengguna API ini",
 									"type": "text"
 								}
 							]
@@ -184,7 +220,7 @@
 									"var count = Object.keys(responseJson).length;\r",
 									"\r",
 									"pm.test('Jumlah Response Benar', function () {\r",
-									"    pm.expect(count).to.equal(8);\r",
+									"    pm.expect(count).to.equal(9);\r",
 									"});\r",
 									""
 								],
@@ -229,6 +265,7 @@
 							{
 								"key": "x-auth-token",
 								"value": "{{x-auth-token}}",
+								"description": "JWT pengguna API yang sedang login",
 								"type": "text"
 							}
 						],
@@ -310,6 +347,7 @@
 							{
 								"key": "x-auth-token",
 								"value": "{{x-auth-token}}",
+								"description": "JWT pengguna API yang sedang login",
 								"type": "text"
 							}
 						],
@@ -318,7 +356,8 @@
 							"urlencoded": [
 								{
 									"key": "saldo",
-									"value": "100000",
+									"value": "10000000",
+									"description": "Jumlah saldo yang ingin ditambahkan",
 									"type": "text"
 								}
 							]
@@ -401,6 +440,7 @@
 							{
 								"key": "x-auth-token",
 								"value": "{{x-auth-token}}",
+								"description": "JWT pengguna API yang sedang login",
 								"type": "text"
 							}
 						],
@@ -409,7 +449,8 @@
 							"urlencoded": [
 								{
 									"key": "tipe",
-									"value": "2",
+									"value": "1",
+									"description": "Tipe status pengguna API ini (bertahap)\n1:  Free\n2: Advance\n3: Profesional",
 									"type": "text"
 								}
 							]
@@ -493,6 +534,7 @@
 							{
 								"key": "x-auth-token",
 								"value": "{{x-auth-token}}",
+								"description": "JWT pengguna API yang sedang login",
 								"type": "text"
 							}
 						],
@@ -502,6 +544,7 @@
 								{
 									"key": "api_hit",
 									"value": "10",
+									"description": "Jumlah API_hit yang ingin ditambahkan",
 									"type": "text"
 								}
 							]
@@ -576,7 +619,8 @@
 						"header": [
 							{
 								"key": "x-auth-token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImtvZGUiOiJQRV9ZWTAwMSIsIm5hbWEiOiJZb25na2kiLCJlbWFpbCI6InlvbmdraTIudGFudUBnbWFpbC5jb20iLCJ0ZWxlcG9uIjoiMDg1Nzg1NDg3OTQzIiwiamVuaXNrZWxhbWluIjoiTCIsImFwaV9oaXQiOjExMCwiYXBpX2tleSI6InY0MjIxMTlIbzhSMTBvNjIxMCIsInNhbGRvIjoxNzUwMDAsInRpcGVfdXNlciI6MSwiZm90b191c2VyIjoiLi9QdWJsaWMvdXBsb2Fkcy9Qcm9maWxfUEVfWVkwMDEucG5nIn0sImlhdCI6MTYyMjcwMzIyMn0.Tbhcc4WRj0MxDVSl1Hk9QG_sGoqOyglGjFzt7hZT_ik",
+								"value": "{{x-auth-token}}",
+								"description": "JWT pengguna API yang sedang login",
 								"type": "text"
 							}
 						],
@@ -586,11 +630,13 @@
 								{
 									"key": "id_produk",
 									"value": "PR_AC001",
+									"description": "Id produk yang ingin diberi komentar",
 									"type": "text"
 								},
 								{
 									"key": "isi_deskripsi",
 									"value": "Menarik dan berkualitas",
+									"description": "Isi komentar tentang deskripsi produk",
 									"type": "text"
 								}
 							]
@@ -628,8 +674,8 @@
 									"  body: {\r",
 									"        mode: 'urlencoded',\r",
 									"        urlencoded: [\r",
-									"        {key: \"email\", value: \"yongki10.tanu@gmail.com\"},\r",
-									"        {key: \"password\", value: \"007\"}\r",
+									"        {key: \"email\", value: \"hakim.agus@sudiati.name\"},\r",
+									"        {key: \"password\", value: \"456\"}\r",
 									"        ] \r",
 									"    }\r",
 									"};\r",
@@ -663,6 +709,7 @@
 							{
 								"key": "x-auth-token",
 								"value": "{{x-auth-token}}",
+								"description": "JWT pengguna API yang sedang login",
 								"type": "text"
 							}
 						],
@@ -671,7 +718,8 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "yongki7.tanu@gmail.com",
+									"value": "gantiemail21@gmail.com",
+									"description": "Email baru yang ingin didaftarkan",
 									"type": "text"
 								}
 							]
@@ -789,7 +837,8 @@
 							{
 								"key": "x-auth-token",
 								"value": "{{x-auth-token}}",
-								"type": "text"
+								"type": "text",
+								"description": "JWT Admin"
 							}
 						],
 						"body": {
@@ -798,67 +847,80 @@
 								{
 									"key": "nama",
 									"value": "Adem Sari",
+									"description": "Nama produk baru",
 									"type": "text"
 								},
 								{
 									"key": "id_kategori",
 									"value": "KA_OB001",
+									"description": "Id kategori produk",
 									"type": "text"
 								},
 								{
 									"key": "id_produsen",
 									"value": "PO_CV001",
+									"description": "Id produsen produk",
 									"type": "text"
 								},
 								{
 									"key": "satuan",
 									"value": "SA_KA002",
+									"description": "Satuan produk",
 									"type": "text"
 								},
 								{
 									"key": "indikasi",
 									"value": "Menyembuhkan flu",
+									"description": "Indikasi produk baru",
 									"type": "text"
 								},
 								{
 									"key": "komposisi",
 									"value": "Kaplet 250mg",
+									"description": "Komposisi produk baru",
 									"type": "text"
 								},
 								{
 									"key": "dosis",
 									"value": "3x Sehari",
+									"description": "Dosis produk baru",
 									"type": "text"
 								},
 								{
 									"key": "aturan_pakai",
 									"value": "Sebelum makan",
+									"description": "Aturan pakai produk baru",
 									"type": "text"
 								},
 								{
 									"key": "kemasan",
 									"value": "Kaplet",
+									"description": "Kemasan produk baru",
 									"type": "text"
 								},
 								{
 									"key": "harga",
 									"value": "15000",
+									"description": "Harga produk baru",
 									"type": "text"
 								},
 								{
 									"key": "butuh_resep",
 									"value": "0",
+									"description": "Produk baru ini butuh resep atau tidak",
 									"type": "text"
 								},
 								{
 									"key": "keterangan",
 									"value": "Aman bagi anak-anak",
+									"description": "Keterangan produk baru",
 									"type": "text"
 								},
 								{
 									"key": "foto_produk",
+									"description": "Foto produk baru",
 									"type": "file",
-									"src": []
+									"src": "Screenshot (1).png"
 								}
 							]
 						},
@@ -948,7 +1010,8 @@
 							{
 								"key": "x-auth-token",
 								"value": "{{x-auth-token}}",
-								"type": "text"
+								"type": "text",
+								"description": "JWT Admin"
 							}
 						],
 						"body": {
@@ -957,32 +1020,38 @@
 								{
 									"key": "id_produk",
 									"value": "PR_FF001",
+									"description": "Id produk yang ingin diubah",
 									"type": "text"
 								},
 								{
 									"key": "id_produsen",
 									"value": "PO_CV002",
+									"description": "Id produsen ",
 									"type": "text"
 								},
 								{
 									"key": "harga",
 									"value": "12500",
+									"description": "Harga baru produk",
 									"type": "text"
 								},
 								{
 									"key": "kemasan",
 									"value": "Strip Foil",
+									"description": "Kemasan produk",
 									"type": "text"
 								},
 								{
 									"key": "keterangan",
 									"value": "Aman bagi anak-anak umur 7-10 tahun",
+									"description": "Keterangan baru produk",
 									"type": "text"
 								},
 								{
 									"key": "foto_produk",
+									"description": "Foto baru produk",
 									"type": "file",
-									"src": "/C:/Users/User/Pictures/Getsocio.png"
+									"src": "/C:/Users/User/Pictures/Screenshots/Screenshot (4).png"
 								}
 							]
 						},
@@ -1007,7 +1076,7 @@
 							"script": {
 								"exec": [
 									"pm.test('Id Produk should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
-									"    pm.expect(pm.request.body.formdata.has('id_produk')).to.equal(true);\r",
+									"    pm.expect(pm.request.body.urlencoded.has('id_produk')).to.equal(true);\r",
 									"});\r",
 									"\r",
 									"const tokenUrl = `${pm.environment.get(\"base_url\")}/users/login`;\r",
@@ -1052,6 +1121,7 @@
 							{
 								"key": "x-auth-token",
 								"value": "{{x-auth-token}}",
+								"description": "JWT Admin",
 								"type": "text"
 							}
 						],
@@ -1060,7 +1130,8 @@
 							"urlencoded": [
 								{
 									"key": "id_produk",
-									"value": "PR_FF001",
+									"value": "PR_AD001",
+									"description": "Id produk yang ingin dihapus",
 									"type": "text"
 								}
 							]
@@ -1072,13 +1143,6 @@
 							],
 							"path": [
 								"produk"
-							],
-							"query": [
-								{
-									"key": "",
-									"value": "",
-									"disabled": true
-								}
 							]
 						},
 						"description": "Untuk menghapus data produk obat pada sistem."
@@ -1148,7 +1212,8 @@
 							{
 								"key": "x-auth-token",
 								"value": "{{x-auth-token}}",
-								"type": "text"
+								"type": "text",
+								"description": "JWT Admin"
 							}
 						],
 						"url": {
@@ -1216,6 +1281,7 @@
 							{
 								"key": "x-auth-token",
 								"value": "{{x-auth-token}}",
+								"description": "JWT Admin",
 								"type": "text"
 							}
 						],
@@ -1241,7 +1307,7 @@
 							"script": {
 								"exec": [
 									"pm.test('Email should exist (tidak berlaku untuk uncheck variable key)', function () {\r",
-									"    pm.expect(pm.request.body.formdata.has('email')).to.equal(true);\r",
+									"    pm.expect(pm.request.body.urlencoded.has('email')).to.equal(true);\r",
 									"});\r",
 									"\r",
 									"const tokenUrl = `${pm.environment.get(\"base_url\")}/users/login`;\r",
@@ -1286,6 +1352,7 @@
 							{
 								"key": "x-auth-token",
 								"value": "{{x-auth-token}}",
+								"description": "JWT Admin",
 								"type": "text"
 							}
 						],
@@ -1294,7 +1361,8 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "abc.tanu@gmail.com",
+									"value": "gantiemail21@gmail.com",
+									"description": "Email pengguna API ini yang ingin di ban",
 									"type": "text"
 								}
 							]
@@ -1362,6 +1430,7 @@
 							{
 								"key": "x-auth-token",
 								"value": "{{x-auth-token}}",
+								"description": "JWT Admin",
 								"type": "text"
 							}
 						],
@@ -1376,18 +1445,14 @@
 							],
 							"query": [
 								{
-									"key": "interval",
-									"value": "",
-									"description": "minggu atau ",
-									"disabled": true
-								},
-								{
 									"key": "nama",
-									"value": null
+									"value": null,
+									"description": "Nama pengguna API ini"
 								},
 								{
 									"key": "tanggal",
-									"value": null
+									"value": null,
+									"description": "Tanggal log aktivitas yang ingin dicari"
 								}
 							]
 						}
@@ -1443,6 +1508,7 @@
 							{
 								"key": "x-auth-token",
 								"value": "{{x-auth-token}}",
+								"description": "JWT Admin",
 								"type": "text"
 							}
 						],
@@ -1509,6 +1575,7 @@
 							{
 								"key": "x-auth-token",
 								"value": "{{x-auth-token}}",
+								"description": "JWT Admin",
 								"type": "text"
 							}
 						],
@@ -1611,6 +1678,7 @@
 							{
 								"key": "x-auth-token",
 								"value": "{{x-auth-token}}",
+								"description": "API key pengguna API yang sedang login",
 								"type": "text"
 							}
 						],
@@ -1702,6 +1770,7 @@
 							{
 								"key": "x-auth-token",
 								"value": "{{x-auth-token}}",
+								"description": "API key pengguna API yang sedang login",
 								"type": "text"
 							}
 						],
@@ -1780,7 +1849,8 @@
 							{
 								"key": "x-auth-token",
 								"value": "{{x-auth-token}}",
-								"type": "text"
+								"type": "text",
+								"description": "API key pengguna API yang sedang login"
 							}
 						],
 						"body": {
@@ -1788,7 +1858,7 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "{{base_url}}/produk?nama=ac&limit=2",
+							"raw": "{{base_url}}/produk?nama=flu&limit=2",
 							"host": [
 								"{{base_url}}"
 							],
@@ -1798,12 +1868,13 @@
 							"query": [
 								{
 									"key": "nama",
-									"value": "ac",
-									"description": "Nama Produk"
+									"value": "flu",
+									"description": "Nama produk yang dicari"
 								},
 								{
 									"key": "limit",
-									"value": "2"
+									"value": "2",
+									"description": "Jumlah data produk yang ingin ditampilkan (berkaitan dengan tipe user)"
 								}
 							]
 						},
@@ -1869,6 +1940,7 @@
 							{
 								"key": "x-auth-token",
 								"value": "{{x-auth-token}}",
+								"description": "API key pengguna API yang sedang login",
 								"type": "text"
 							}
 						],
@@ -1885,15 +1957,17 @@
 								{
 									"key": "nama",
 									"value": null,
-									"description": "Nama Kategori"
+									"description": "Nama kategori yang ingin dicari"
 								},
 								{
 									"key": "deskripsi",
-									"value": null
+									"value": null,
+									"description": "Deskripsi kategori yang ingin dicari"
 								},
 								{
 									"key": "limit",
-									"value": null
+									"value": null,
+									"description": "Jumlah data kategori yang ingin ditampilkan (berkaitan dengan tipe user)"
 								}
 							]
 						},
@@ -1959,7 +2033,8 @@
 							{
 								"key": "x-auth-token",
 								"value": "{{x-auth-token}}",
-								"type": "text"
+								"type": "text",
+								"description": "API key pengguna API yang sedang login"
 							}
 						],
 						"url": {
@@ -1979,11 +2054,13 @@
 								},
 								{
 									"key": "kota",
-									"value": "amb"
+									"value": "amb",
+									"description": "Nama kota produsen yang ingin dicari"
 								},
 								{
 									"key": "limit",
-									"value": "5"
+									"value": "5",
+									"description": "Jumlah data produsen yang ingin ditampilkan (berkaitan dengan tipe user)"
 								}
 							]
 						},
