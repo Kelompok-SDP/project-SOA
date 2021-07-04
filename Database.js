@@ -2,15 +2,12 @@ let mysql = require("mysql");
 require('dotenv').config();
 
 let pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME || process.env.DB_DATABASE
+    host: "remotemysql.com",
+    user: "4URa7hbGjT",
+    password: "hFA9p56bt4",
+    database: "4URa7hbGjT"
 });
 
-console.log("H: "+process.env.DB_HOST);
-console.log("U: "+process.env.DB_USERNAME);
-console.log("P: "+process.env.DB_PASSWORD);
 const executeQuery = async (query) => {
     return new Promise((resolve, reject) => {
         pool.query(query, (err, rows, fields) => {

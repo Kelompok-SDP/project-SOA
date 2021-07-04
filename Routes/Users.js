@@ -10,6 +10,7 @@ const db = require('../Database');
 
 async function getUser(req,res){
     let user = auth.verifyToken(req,res);
+  console.log(user);
     user.data = await User.getAllUser(`where email='${user.data.email}' AND tipe_user != 4`,0);
     console.log("Get User : "+user.data);
     user.data=user.data[0];
@@ -82,11 +83,6 @@ async function getUser(req,res){
 
 
 router.post('/register', Upload.upload.single("foto_user"), async (req, res) => {
-    if(!req.file){
-        return res.status(400).send({
-            "msg": "Tidak ada foto"
-        })
-    }
     //let nama_file = null;
     let {nama, email,password,telepon,jenis_kelamin} = req.body;
     console.log(nama);  
@@ -210,13 +206,14 @@ const vertifikasiAdmin = async (req, res) => {
             status:401,
             msg: 'Unauthorized hanya boleh admin'
         };
-    }else{
-        return user;
     }
+    return user;
+    
 }
 
 router.get('/',async (req, res) => {
     let data = await vertifikasiAdmin(req,res);
+  console.log(data);
     if(data.status == 401){
         return res.status(401).send({"Message": data.msg});
     }
@@ -243,11 +240,11 @@ router.get('/profil',async (req, res) => {
 
 router.put('/upgrade',async (req, res) => {
     let user=await getUser(req,res)
-    let price=[0,15000,25000];
+    let price=[15000,25000];
     //console.log(user.data.saldo, user.data.tipe_user, user.data.email);
     let tipe=req.body.tipe;
 
-    if(tipe > 3){
+    if(tipe > 2){
         return res.status(400).send("Tipe salah input");
     }
 
@@ -317,7 +314,7 @@ router.put('/topup',async (req, res) => {
     let updatedUser = await User.updateUser(`set saldo='${user.data.saldo}'`,`where email='${user.data.email}'`);
 
     let keterangan = "top up saldo sebesar :" + parseInt(saldo);
-    await User.makeLog(user.kode,keterangan,saldo,"TopUp");
+    await User.makeLog(user.data.kode,keterangan,saldo,"TopUp");
 
 
     return res.status(200).send(user.data);
@@ -394,15 +391,16 @@ router.get('/log', async (req, res) =>{
         }
         
     }
-
+    console.log("log: "+where, limit, users);
     let logs = await User.getLogAllUser(where,limit,users);
     return res.status(200).send(logs);
 })
 
 //===== SHAN
 router.get('/:id_user', async (req, res) =>{
+    
     let verify = await vertifikasiAdmin(req, res);
-    if(!verify){
+    if(verify){
         let userId = req.params.id_user;
         let searchUser = await User.getUser(userId);
         if(searchUser.data){
@@ -415,6 +413,8 @@ router.get('/:id_user', async (req, res) =>{
             Message: searchUser.msg,
 
         });
+    }else{
+      console.log("test");
     }
 });
 
